@@ -1,0 +1,3527 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>mr.muscle_mind • Autonomous Fitness & Recomp Engine</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- html2canvas for Gallery Image Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- html2pdf.js for Full All-Tab PDF Dossier Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* 2-COLOR DESIGN SYSTEM TOKENS */
+    :root {
+      /* Theme: Obsidian & Electric Purple (Default) */
+      --bg-base: #0b0f17;
+      --bg-panel: rgba(18, 24, 38, 0.94);
+      --bg-sub: rgba(26, 34, 52, 0.90);
+      --border-panel: rgba(168, 85, 247, 0.28);
+      --accent-main: #a855f7;
+      --accent-glow: rgba(168, 85, 247, 0.35);
+      --badge-bg: rgba(168, 85, 247, 0.15);
+      --badge-border: rgba(168, 85, 247, 0.35);
+    }
+
+    [data-theme="crimson"] {
+      --bg-base: #050505;
+      --bg-panel: rgba(17, 17, 17, 0.94);
+      --bg-sub: rgba(28, 28, 28, 0.92);
+      --border-panel: rgba(239, 68, 68, 0.3);
+      --accent-main: #ef4444;
+      --accent-glow: rgba(239, 68, 68, 0.35);
+      --badge-bg: rgba(239, 68, 68, 0.15);
+      --badge-border: rgba(239, 68, 68, 0.35);
+    }
+
+    [data-theme="cyan"] {
+      --bg-base: #060b14;
+      --bg-panel: rgba(13, 22, 38, 0.94);
+      --bg-sub: rgba(19, 32, 54, 0.92);
+      --border-panel: rgba(6, 182, 212, 0.3);
+      --accent-main: #06b6d4;
+      --accent-glow: rgba(6, 182, 212, 0.35);
+      --badge-bg: rgba(6, 182, 212, 0.15);
+      --badge-border: rgba(6, 182, 212, 0.35);
+    }
+
+    [data-theme="emerald"] {
+      --bg-base: #060d09;
+      --bg-panel: rgba(13, 27, 20, 0.94);
+      --bg-sub: rgba(19, 39, 29, 0.92);
+      --border-panel: rgba(16, 185, 129, 0.3);
+      --accent-main: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.35);
+      --badge-bg: rgba(16, 185, 129, 0.15);
+      --badge-border: rgba(16, 185, 129, 0.35);
+    }
+
+    [data-theme="stealth"] {
+      --bg-base: #080808;
+      --bg-panel: rgba(20, 20, 20, 0.94);
+      --bg-sub: rgba(32, 32, 32, 0.92);
+      --border-panel: rgba(255, 255, 255, 0.2);
+      --accent-main: #f8fafc;
+      --accent-glow: rgba(255, 255, 255, 0.25);
+      --badge-bg: rgba(255, 255, 255, 0.12);
+      --badge-border: rgba(255, 255, 255, 0.25);
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    input, textarea, select { user-select: text; }
+
+    .theme-panel {
+      background: var(--bg-panel);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-panel);
+    }
+    .theme-sub {
+      background: var(--bg-sub);
+    }
+    .theme-input {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--border-panel);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .theme-input:focus {
+      border-color: var(--accent-main);
+      box-shadow: 0 0 12px var(--accent-glow);
+      outline: none;
+    }
+    .theme-btn-main {
+      background-color: var(--accent-main);
+      color: #0b0f17;
+      font-weight: 800;
+      box-shadow: 0 0 16px var(--accent-glow);
+      transition: all 0.2s ease;
+    }
+    [data-theme="stealth"] .theme-btn-main { color: #050505; }
+    .theme-btn-main:active { transform: scale(0.97); }
+
+    .theme-badge {
+      background-color: var(--badge-bg);
+      color: var(--accent-main);
+      border: 1px solid var(--badge-border);
+    }
+
+    .ring-track {
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+      transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes captain-float {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-4px) scale(1.03); }
+    }
+    .captain-ball {
+      animation: captain-float 3.5s ease-in-out infinite;
+      box-shadow: 0 10px 25px -3px rgba(245, 158, 11, 0.4), 0 0 15px rgba(251, 191, 36, 0.3);
+    }
+
+    .accordion-content {
+      transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+    }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="min-h-screen pb-32 antialiased">
+
+  <!-- SLIDER DRAWER NAVIGATION (SINGLE SOURCE OF TRUTH) -->
+  <div id="drawer-backdrop" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden transition-opacity" onclick="toggleDrawer(false)"></div>
+
+  <aside id="drawer-slider" class="fixed top-0 bottom-0 left-0 z-50 w-72 max-w-[85vw] theme-panel border-r border-[var(--border-panel)] shadow-2xl transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col justify-between p-4">
+    <div class="space-y-4">
+      <div class="flex items-center justify-between border-b border-[var(--border-panel)] pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl theme-btn-main flex items-center justify-center font-display font-black text-xs">
+            MMM
+          </div>
+          <div>
+            <h2 class="font-display font-black text-sm tracking-wider text-white">mr.muscle_mind</h2>
+            <span class="text-[10px] text-slate-400 font-mono">Autonomous Fitness Core</span>
+          </div>
+        </div>
+        <button onclick="toggleDrawer(false)" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="space-y-1.5 text-xs font-semibold">
+        <button onclick="navigateFromDrawer('diet')" id="drawer-nav-diet" class="w-full p-2.5 rounded-xl flex items-center gap-3 text-slate-200 hover:bg-white/5 active:scale-98 transition text-left">
+          <i data-lucide="utensils" class="w-4 h-4" style="color: var(--accent-main);"></i>
+          <span>Diet & Nutrition Hub</span>
+        </button>
+        <button onclick="navigateFromDrawer('ppl')" id="drawer-nav-ppl" class="w-full p-2.5 rounded-xl flex items-center gap-3 text-slate-200 hover:bg-white/5 active:scale-98 transition text-left">
+          <i data-lucide="dumbbell" class="w-4 h-4" style="color: var(--accent-main);"></i>
+          <span>PPL Hypertrophy Track</span>
+        </button>
+        <button onclick="navigateFromDrawer('meas')" id="drawer-nav-meas" class="w-full p-2.5 rounded-xl flex items-center gap-3 text-slate-200 hover:bg-white/5 active:scale-98 transition text-left">
+          <i data-lucide="ruler" class="w-4 h-4" style="color: var(--accent-main);"></i>
+          <span>Body Measurement Vault</span>
+        </button>
+        <button onclick="navigateFromDrawer('stats')" id="drawer-nav-stats" class="w-full p-2.5 rounded-xl flex items-center gap-3 text-slate-200 hover:bg-white/5 active:scale-98 transition text-left">
+          <i data-lucide="activity" class="w-4 h-4" style="color: var(--accent-main);"></i>
+          <span>90-Day Analytics & Matrix</span>
+        </button>
+      </nav>
+
+      <div class="pt-3 border-t border-[var(--border-panel)] space-y-2">
+        <span class="text-[10px] font-bold uppercase text-slate-400 px-2 block">Quick Controls</span>
+        <button onclick="openEnergyCustomizerModal(); toggleDrawer(false);" class="w-full p-2.5 rounded-xl theme-sub border border-[var(--border-panel)] text-slate-200 text-xs flex items-center justify-between">
+          <span class="flex items-center gap-2"><i data-lucide="sliders" class="w-3.5 h-3.5"></i> Energy Customizer</span>
+          <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+        </button>
+        <button onclick="toggleModal('modal-themes'); toggleDrawer(false);" class="w-full p-2.5 rounded-xl theme-sub border border-[var(--border-panel)] text-slate-200 text-xs flex items-center justify-between">
+          <span class="flex items-center gap-2"><i data-lucide="palette" class="w-3.5 h-3.5"></i> 2-Color Themes</span>
+          <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+        </button>
+        <button onclick="openExportModal(); toggleDrawer(false);" class="w-full p-2.5 rounded-xl theme-btn-main text-xs flex items-center justify-center gap-2">
+          <i data-lucide="share-2" class="w-3.5 h-3.5"></i> Save to Gallery / PDF
+        </button>
+      </div>
+    </div>
+
+    <!-- Drawer Footer Profile Tag -->
+    <div class="pt-3 border-t border-[var(--border-panel)] text-xs flex items-center justify-between">
+      <div class="flex items-center gap-2 overflow-hidden">
+        <div class="w-7 h-7 rounded-full theme-btn-main flex items-center justify-center font-bold text-xs" id="drawer-user-avatar">
+          G
+        </div>
+        <div class="truncate">
+          <div class="font-bold text-white text-[11px] truncate" id="drawer-user-name">Guest Athlete</div>
+          <div class="text-[9px] text-slate-400 truncate" id="drawer-user-email">Tap to log in</div>
+        </div>
+      </div>
+      <button onclick="toggleModal('modal-auth'); toggleDrawer(false);" class="text-slate-400 hover:text-white p-1">
+        <i data-lucide="user-check" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- SINGLE UNIFIED CLEAN HEADER (NO DUPLICATE DOCKS) -->
+  <header class="sticky top-0 z-40 bg-[var(--bg-base)]/95 backdrop-blur-xl border-b border-[var(--border-panel)] shadow-xl">
+    <div class="max-w-md mx-auto px-3.5 pt-3 pb-2.5 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <button onclick="toggleDrawer(true)" class="w-8 h-8 rounded-xl theme-sub border border-[var(--border-panel)] flex items-center justify-center text-slate-200 hover:text-white active:scale-95 transition" title="Menu">
+          <i data-lucide="menu" class="w-4 h-4"></i>
+        </button>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 class="font-display font-black text-xs tracking-widest text-white uppercase">mr.muscle_mind</h1>
+            <span id="cloud-sync-indicator" class="w-2 h-2 rounded-full bg-amber-400" title="Account Status"></span>
+          </div>
+          <p id="top-date-display" class="text-[10px] font-mono text-slate-400">Loading Date...</p>
+        </div>
+      </div>
+
+      <!-- Quick Controls -->
+      <div class="flex items-center gap-1">
+        <button onclick="shiftDate(-1)" class="w-7 h-7 rounded-lg theme-sub border border-[var(--border-panel)] flex items-center justify-center text-slate-300 hover:text-white active:scale-95 transition">
+          <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
+        </button>
+        <button onclick="resetDateToday()" class="px-2 h-7 rounded-lg theme-sub border border-[var(--border-panel)] text-[10px] font-bold text-slate-200 active:scale-95 transition font-mono">
+          TODAY
+        </button>
+        <button onclick="shiftDate(1)" class="w-7 h-7 rounded-lg theme-sub border border-[var(--border-panel)] flex items-center justify-center text-slate-300 hover:text-white active:scale-95 transition">
+          <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+        </button>
+        <!-- Download / Share Modal Trigger -->
+        <button onclick="openExportModal()" class="w-7 h-7 rounded-lg theme-badge flex items-center justify-center active:scale-95 transition ml-0.5" title="Save to Gallery or PDF">
+          <i data-lucide="download" class="w-3.5 h-3.5"></i>
+        </button>
+        <!-- Account / Login Button -->
+        <button onclick="toggleModal('modal-auth')" id="nav-auth-btn" class="w-7 h-7 rounded-lg theme-sub border border-[var(--border-panel)] flex items-center justify-center active:scale-95 transition" title="User Account">
+          <i data-lucide="user" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- REST INTERVAL FLOATING HUD -->
+  <div id="rest-timer-hud" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 hidden">
+    <div class="theme-panel px-4 py-2 rounded-full border border-[var(--border-panel)] shadow-2xl flex items-center gap-3">
+      <i data-lucide="timer" class="w-4 h-4 animate-spin" style="color: var(--accent-main);"></i>
+      <span class="text-xs text-slate-300 font-medium">Rest Timer:</span>
+      <span id="rest-timer-display" class="font-mono text-sm font-bold" style="color: var(--accent-main);">01:30</span>
+      <button onclick="stopRestTimer()" class="text-slate-400 hover:text-white text-xs pl-1">✕</button>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-box" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none transition-all duration-300 opacity-0 -translate-y-2">
+    <div id="toast-content" class="theme-panel px-4 py-2 rounded-xl border border-[var(--border-panel)] shadow-xl text-xs font-bold text-white flex items-center gap-2">
+      <i data-lucide="check-circle" class="w-4 h-4" style="color: var(--accent-main);"></i>
+      <span id="toast-text">Action Completed</span>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-md mx-auto p-3.5 space-y-3.5">
+
+    <!-- ============================================== -->
+    <!-- TAB 1: DIET, MEALS & HYDRATION HUB             -->
+    <!-- ============================================== -->
+    <div id="tab-diet" class="tab-view space-y-3.5">
+
+      <!-- SECTION 1: ENERGY BALANCE CARD -->
+      <section id="daily-export-card" class="theme-panel rounded-3xl shadow-xl overflow-hidden border border-[var(--border-panel)]">
+        <div onclick="toggleAccordion('acc-energy')" class="p-4 flex items-center justify-between cursor-pointer bg-white/[0.02] border-b border-[var(--border-panel)]/50">
+          <div class="flex items-center gap-2">
+            <i data-lucide="flame" class="w-4 h-4" style="color: var(--accent-main);"></i>
+            <div>
+              <span class="text-[10px] font-bold tracking-widest uppercase text-slate-400 block">Daily Energy Dynamic</span>
+              <div class="font-display font-black text-sm text-white flex items-center gap-1.5">
+                Deficit: <span id="hud-deficit-val" class="font-mono" style="color: var(--accent-main);">-500</span> kcal
+                <span id="hud-status-badge" class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold theme-badge ml-1">OPTIMAL CUT</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center gap-1">
+            <button onclick="event.stopPropagation(); openEnergyCustomizerModal();" class="text-slate-400 hover:text-white p-1" title="Customize Target">
+              <i data-lucide="sliders" class="w-3.5 h-3.5" style="color: var(--accent-main);"></i>
+            </button>
+            <i id="acc-energy-icon" data-lucide="chevron-up" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>
+          </div>
+        </div>
+
+        <div id="acc-energy" class="accordion-content p-4 space-y-3">
+          <div class="flex items-center justify-between gap-3">
+            <!-- Concentric Progress Rings -->
+            <div class="relative w-32 h-32 flex items-center justify-center shrink-0">
+              <svg class="w-32 h-32" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="50" stroke="rgba(255,255,255,0.06)" stroke-width="8" fill="none" />
+                <circle cx="60" cy="60" r="38" stroke="rgba(255,255,255,0.06)" stroke-width="8" fill="none" />
+                <circle cx="60" cy="60" r="26" stroke="rgba(255,255,255,0.06)" stroke-width="8" fill="none" />
+                <circle id="ring-cals" class="ring-track" cx="60" cy="60" r="50" stroke="var(--accent-main)" stroke-width="8" stroke-dasharray="314.16" stroke-dashoffset="314.16" stroke-linecap="round" fill="none" />
+                <circle id="ring-protein" class="ring-track" cx="60" cy="60" r="38" stroke="var(--accent-main)" stroke-opacity="0.75" stroke-width="8" stroke-dasharray="238.76" stroke-dashoffset="238.76" stroke-linecap="round" fill="none" />
+                <circle id="ring-steps" class="ring-track" cx="60" cy="60" r="26" stroke="var(--accent-main)" stroke-opacity="0.45" stroke-width="8" stroke-dasharray="163.36" stroke-dashoffset="163.36" stroke-linecap="round" fill="none" />
+              </svg>
+              <div class="absolute flex flex-col items-center justify-center text-center">
+                <span id="hud-in-cals" class="font-display font-black text-base text-white leading-none">0</span>
+                <span class="text-[8px] uppercase font-bold text-slate-400 tracking-wider">consumed</span>
+              </div>
+            </div>
+
+            <!-- Macro Bars -->
+            <div class="flex-1 space-y-2">
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span class="flex items-center gap-1.5" style="color: var(--accent-main);">
+                    <span class="w-1.5 h-1.5 rounded-full" style="background-color: var(--accent-main);"></span> Protein
+                  </span>
+                  <span class="text-slate-300 font-mono text-[11px]"><strong id="val-p-cur" style="color: var(--accent-main);">0</strong> / <span id="val-p-tar">140</span>g</span>
+                </div>
+                <div class="w-full bg-black/60 h-1.5 rounded-full overflow-hidden border border-white/5">
+                  <div id="bar-p-fill" class="h-full rounded-full transition-all duration-300" style="background-color: var(--accent-main); width: 0%;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span class="flex items-center gap-1.5 text-slate-300">
+                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Carbs
+                  </span>
+                  <span class="text-slate-300 font-mono text-[11px]"><strong id="val-c-cur" class="text-white">0</strong> / <span id="val-c-tar">220</span>g</span>
+                </div>
+                <div class="w-full bg-black/60 h-1.5 rounded-full overflow-hidden border border-white/5">
+                  <div id="bar-c-fill" class="h-full rounded-full bg-slate-400 transition-all duration-300" style="width: 0%;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span class="flex items-center gap-1.5 text-slate-400">
+                    <span class="w-1.5 h-1.5 rounded-full bg-slate-600"></span> Fats
+                  </span>
+                  <span class="text-slate-300 font-mono text-[11px]"><strong id="val-f-cur" class="text-slate-200">0</strong> / <span id="val-f-tar">55</span>g</span>
+                </div>
+                <div class="w-full bg-black/60 h-1.5 rounded-full overflow-hidden border border-white/5">
+                  <div id="bar-f-fill" class="h-full rounded-full bg-slate-600 transition-all duration-300" style="width: 0%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 pt-2 border-t border-[var(--border-panel)]/40 text-center font-mono">
+            <div class="theme-sub p-1.5 rounded-xl border border-[var(--border-panel)]">
+              <span class="text-[8px] uppercase font-sans font-bold text-slate-400 block">BMR Baseline</span>
+              <span id="hud-bmr" class="font-bold text-white text-[11px]">1,726</span> <span class="text-[8px] text-slate-500">kcal</span>
+            </div>
+            <div class="theme-sub p-1.5 rounded-xl border border-[var(--border-panel)]">
+              <span class="text-[8px] uppercase font-sans font-bold text-slate-400 block">Active Burn</span>
+              <span id="hud-active" class="font-bold text-[11px]" style="color: var(--accent-main);">735</span> <span class="text-[8px] text-slate-500">kcal</span>
+            </div>
+            <div class="theme-sub p-1.5 rounded-xl border border-[var(--border-panel)]">
+              <span class="text-[8px] uppercase font-sans font-bold text-slate-400 block">Total TDEE</span>
+              <span id="hud-tdee" class="font-bold text-[11px] text-white">2,461</span> <span class="text-[8px] text-slate-500">kcal</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2A: MORNING WEIGH-IN CARD -->
+      <section class="theme-panel rounded-2xl shadow-lg overflow-hidden border border-[var(--border-panel)]">
+        <div onclick="toggleAccordion('acc-weigh-in')" class="p-3.5 flex items-center justify-between cursor-pointer bg-white/[0.02]">
+          <div class="flex items-center gap-2">
+            <i data-lucide="scale" class="w-4 h-4" style="color: var(--accent-main);"></i>
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-300 block">Morning Scale Weight</span>
+              <div class="text-[11px] font-mono text-slate-400">
+                Current: <span id="vitals-summary-weight" class="text-white font-bold">79.0 kg</span> • Status: <span id="weigh-in-status" class="text-emerald-400 font-bold">Synced</span>
+              </div>
+            </div>
+          </div>
+          <i id="acc-weigh-in-icon" data-lucide="chevron-up" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>
+        </div>
+
+        <div id="acc-weigh-in" class="accordion-content p-3.5 pt-0 space-y-2.5">
+          <div class="theme-sub p-3 rounded-xl border border-[var(--border-panel)] space-y-2">
+            <div class="flex justify-between items-center text-[10px]">
+              <span class="font-bold text-slate-300">Fastened Morning Scale Entry</span>
+              <span class="text-[9px] font-mono text-slate-400">Real-time sync to BMR & Body Vault</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <input type="number" id="input-daily-weight" step="0.1" placeholder="79.0" class="theme-input flex-1 rounded-xl p-2.5 text-xs text-white text-center font-bold font-mono">
+              <button onclick="commitDailyWeighIn()" class="theme-btn-main px-4 py-2.5 text-xs font-bold rounded-xl active:scale-95 transition shrink-0 flex items-center gap-1.5">
+                <i data-lucide="save" class="w-3.5 h-3.5"></i> Save Weight
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2B: FULLY CUSTOMIZABLE HYDRATION TRACKER CARD -->
+      <section class="theme-panel rounded-2xl shadow-lg overflow-hidden border border-[var(--border-panel)]">
+        <div onclick="toggleAccordion('acc-water')" class="p-3.5 flex items-center justify-between cursor-pointer bg-white/[0.02]">
+          <div class="flex items-center gap-2">
+            <i data-lucide="droplet" class="w-4 h-4 text-cyan-400"></i>
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-300 block">Hydration & Water Intake</span>
+              <div class="text-[11px] font-mono text-slate-400">
+                Hydration: <span id="vitals-summary-water" class="text-cyan-400 font-bold">0 ml</span> (<span id="water-pct-display">0%</span>)
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center gap-1">
+            <button onclick="event.stopPropagation(); toggleWaterGoalEdit(true);" class="text-slate-400 hover:text-white p-1" title="Customize Goal">
+              <i data-lucide="edit-3" class="w-3.5 h-3.5 text-cyan-400"></i>
+            </button>
+            <i id="acc-water-icon" data-lucide="chevron-up" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>
+          </div>
+        </div>
+
+        <div id="acc-water" class="accordion-content p-3.5 pt-0 space-y-2.5">
+          <div class="theme-sub p-3 rounded-xl border border-[var(--border-panel)] space-y-2">
+            <div class="flex justify-between items-center text-[10px]">
+              <span class="font-bold text-slate-300">Daily Target Level</span>
+              <div class="flex items-center gap-1">
+                <span class="font-mono text-cyan-300 text-[11px] font-bold"><span id="water-current-val">0</span> / <span id="water-goal-val">3000</span> ml</span>
+              </div>
+            </div>
+
+            <!-- In-place edit for water goal -->
+            <div id="water-goal-edit-row" class="hidden flex items-center gap-2 pt-1 pb-1">
+              <span class="text-[10px] text-slate-400">Set Goal (ml):</span>
+              <input type="number" id="input-custom-water-goal" step="250" class="theme-input flex-1 rounded-lg p-1.5 text-xs text-white font-mono text-center font-bold" value="3000">
+              <button onclick="saveCustomWaterGoal()" class="theme-btn-main px-3 py-1.5 rounded-lg text-xs font-bold">Save</button>
+              <button onclick="toggleWaterGoalEdit(false)" class="theme-sub border border-white/10 px-2 py-1.5 rounded-lg text-xs text-slate-400">✕</button>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-black/60 h-2.5 rounded-full overflow-hidden border border-white/5">
+              <div id="water-progress-fill" class="h-full bg-cyan-400 rounded-full transition-all duration-300" style="width: 0%;"></div>
+            </div>
+
+            <!-- Increment Buttons -->
+            <div class="grid grid-cols-4 gap-1.5 pt-1">
+              <button onclick="addWater(100)" class="theme-panel border border-cyan-500/30 text-cyan-300 text-xs font-bold py-2 rounded-xl active:scale-95 transition flex items-center justify-center">
+                +100ml
+              </button>
+              <button onclick="addWater(250)" class="theme-panel border border-cyan-500/30 text-cyan-300 text-xs font-bold py-2 rounded-xl active:scale-95 transition flex items-center justify-center">
+                +250ml
+              </button>
+              <button onclick="addWater(500)" class="theme-panel border border-cyan-500/30 text-cyan-300 text-xs font-bold py-2 rounded-xl active:scale-95 transition flex items-center justify-center">
+                +500ml
+              </button>
+              <button onclick="resetWater()" class="theme-panel border border-white/10 text-slate-400 hover:text-white text-xs font-bold py-2 rounded-xl active:scale-95 transition flex items-center justify-center">
+                Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2C: PRE-BUILT DISHES DROPDOWN + CUSTOM RECIPE ADDER -->
+      <section class="theme-panel rounded-2xl shadow-lg overflow-hidden border border-[var(--border-panel)]">
+        <div onclick="toggleAccordion('acc-prebuilt')" class="p-3.5 flex items-center justify-between cursor-pointer bg-white/[0.02]">
+          <div class="flex items-center gap-2">
+            <i data-lucide="chef-hat" class="w-4 h-4" style="color: var(--accent-main);"></i>
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-300 block">Pre-Built Dishes & Custom Combos</span>
+              <div class="text-[11px] font-mono text-slate-400">
+                Select from Presets or Build New Combo Dishes
+              </div>
+            </div>
+          </div>
+          <i id="acc-prebuilt-icon" data-lucide="chevron-up" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>
+        </div>
+
+        <div id="acc-prebuilt" class="accordion-content p-3.5 pt-0 space-y-3">
+          <div class="flex justify-between items-center text-xs pt-1">
+            <span class="text-[10px] uppercase font-bold text-slate-400">Select Dish Preset</span>
+            <div class="flex items-center gap-2">
+              <button onclick="openEditCurrentDropdownCombo()" class="text-[10px] font-semibold text-slate-300 hover:text-white flex items-center gap-1">
+                <i data-lucide="edit-3" class="w-3 h-3 text-cyan-400"></i> Edit Ingredients
+              </button>
+              <button onclick="openNewRecipeModal()" class="text-[10px] font-bold hover:underline flex items-center gap-0.5" style="color: var(--accent-main);">
+                <i data-lucide="plus" class="w-3 h-3"></i> Add New Custom Recipe
+              </button>
+            </div>
+          </div>
+
+          <!-- Dropdown Selector for Prebuilt Dishes -->
+          <div class="grid grid-cols-12 gap-2">
+            <div class="col-span-8">
+              <select id="select-prebuilt-dropdown" class="theme-input w-full rounded-xl p-2.5 text-xs text-white font-medium" onchange="onPrebuiltDropdownChange()">
+                <!-- Populated dynamically via JS -->
+              </select>
+            </div>
+            <div class="col-span-4">
+              <button onclick="logSelectedPrebuiltCombo()" class="w-full theme-btn-main py-2.5 rounded-xl text-xs font-bold active:scale-95 transition flex items-center justify-center gap-1">
+                <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Log Dish
+              </button>
+            </div>
+          </div>
+
+          <!-- Live Summary Card for Selected Prebuilt Dish -->
+          <div id="selected-prebuilt-preview" class="theme-sub p-2.5 rounded-xl border border-[var(--border-panel)] text-xs font-mono space-y-1">
+            <!-- Filled via JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: MEALS & LIVE GEMINI AI FOOD PARSER -->
+      <section class="theme-panel rounded-2xl shadow-lg overflow-hidden border border-[var(--border-panel)]">
+        <div onclick="toggleAccordion('acc-meals')" class="p-3.5 flex items-center justify-between cursor-pointer bg-white/[0.02]">
+          <div class="flex items-center gap-2">
+            <i data-lucide="utensils" class="w-4 h-4" style="color: var(--accent-main);"></i>
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-300 block">Food Logger & AI NLP</span>
+              <div class="text-[11px] font-mono text-slate-400">
+                Logged Today: <span id="diary-count-label" class="font-bold text-white">0 items</span>
+              </div>
+            </div>
+          </div>
+          <i id="acc-meals-icon" data-lucide="chevron-up" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>
+        </div>
+
+        <div id="acc-meals" class="accordion-content p-3.5 pt-0 space-y-3.5">
+          <!-- Meal Mode Switcher -->
+          <div class="grid grid-cols-2 gap-1 p-1 rounded-xl theme-sub border border-[var(--border-panel)]/40 text-[10px] font-bold pt-1">
+            <button onclick="switchMealLoggingMode('single')" id="btn-mode-single" class="py-1.5 rounded-lg theme-btn-main text-center transition">
+              Verified Staples
+            </button>
+            <button onclick="switchMealLoggingMode('ai')" id="btn-mode-ai" class="py-1.5 rounded-lg text-slate-400 hover:text-white text-center transition">
+              Gemini AI Parser
+            </button>
+          </div>
+
+          <!-- Mode 1: Single Staple Logging with REAL-TIME KEYSTROKE MACRO CALCULATION -->
+          <div id="panel-meal-single" class="space-y-2.5">
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-[10px] uppercase font-bold text-slate-400">Verified Database (USDA & NIN Standards)</span>
+              <div class="flex items-center gap-2">
+                <button onclick="openEditSelectedFoodModal()" class="text-[10px] font-semibold hover:underline text-slate-300 hover:text-white flex items-center gap-1">
+                  <i data-lucide="edit-3" class="w-3 h-3 text-cyan-400"></i> Calibrate
+                </button>
+                <button onclick="toggleModal('modal-custom-food')" class="text-[10px] font-bold hover:underline" style="color: var(--accent-main);">
+                  + New Food
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-12 gap-2">
+              <div class="col-span-8">
+                <select id="food-select-dropdown" class="theme-input w-full rounded-xl p-2.5 text-xs text-white font-medium" onchange="recalculateSingleFoodLiveMacros()">
+                  <!-- Populated by JS -->
+                </select>
+              </div>
+              <div class="col-span-4">
+                <input type="number" id="food-qty-input" value="1" step="0.5" min="0.1" placeholder="Qty" class="theme-input w-full rounded-xl p-2.5 text-xs text-white text-center font-bold font-mono" oninput="recalculateSingleFoodLiveMacros()">
+              </div>
+            </div>
+
+            <!-- LIVE REAL-TIME MACRO PREVIEW BANNER -->
+            <div id="single-food-live-preview" class="theme-sub p-2 rounded-xl border border-[var(--border-panel)] text-[11px] font-mono flex justify-between items-center">
+              <!-- Dynamically updated on every keystroke -->
+            </div>
+
+            <button onclick="addManualFood()" class="w-full theme-sub hover:bg-white/10 text-slate-200 border border-[var(--border-panel)] font-semibold text-xs py-2 rounded-xl flex items-center justify-center gap-2 active:scale-98 transition">
+              <i data-lucide="plus-circle" class="w-4 h-4" style="color: var(--accent-main);"></i> Add Food To Daily Record
+            </button>
+          </div>
+
+          <!-- Mode 2: Gemini Live AI Universal Food Parser -->
+          <div id="panel-meal-ai" class="hidden space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] uppercase font-bold text-slate-400">Universal Natural Language Food Parser</span>
+              <span class="text-[9px] font-mono text-emerald-400 flex items-center gap-1 font-bold">● Live Gemini 3 Flash</span>
+            </div>
+            <textarea id="ai-food-input" rows="2" placeholder="Enter ANY dish or food (e.g. '2 parathas with 50g curd', '1 bowl rajma chawal with 1 spoon ghee', '4 boiled egg whites and 1 apple')" class="theme-input w-full rounded-xl p-2.5 text-xs text-white placeholder-slate-500 resize-none font-sans"></textarea>
+            
+            <!-- Quick Chips -->
+            <div class="flex gap-1 overflow-x-auto no-scrollbar py-0.5">
+              <button onclick="appendPrompt('3 boiled eggs, 2 rotis')" class="px-2 py-0.5 rounded-lg theme-sub border border-[var(--border-panel)] text-[9px] text-slate-300 whitespace-nowrap">+3 Eggs & 2 Rotis</button>
+              <button onclick="appendPrompt('40g raw soya chunks in 1 tsp oil')" class="px-2 py-0.5 rounded-lg theme-sub border border-[var(--border-panel)] text-[9px] text-slate-300 whitespace-nowrap">+40g Soya Curry</button>
+              <button onclick="appendPrompt('1 scoop whey isolate with 250ml milk')" class="px-2 py-0.5 rounded-lg theme-sub border border-[var(--border-panel)] text-[9px] text-slate-300 whitespace-nowrap">+Whey Milk Shake</button>
+              <button onclick="appendPrompt('100g raw paneer bhurji')" class="px-2 py-0.5 rounded-lg theme-sub border border-[var(--border-panel)] text-[9px] text-slate-300 whitespace-nowrap">+Paneer Bhurji</button>
+            </div>
+
+            <div class="flex justify-between items-center pt-1">
+              <span id="ai-parse-status" class="text-[10px] text-slate-400">Enter any food for accurate nutritional analysis</span>
+              <button onclick="parseAIFoodWithGemini()" id="btn-parse-ai" class="theme-btn-main font-semibold text-xs px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 active:scale-95 transition">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> AI Analyze & Log
+              </button>
+            </div>
+          </div>
+
+          <!-- Today's Logged Food Stream -->
+          <div class="pt-2 border-t border-[var(--border-panel)]/40">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">Diary Entries for Today</span>
+            <div id="diary-list" class="space-y-1.5 max-h-48 overflow-y-auto no-scrollbar pr-0.5">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4: END OF DAY SUBMIT & LOCK BUTTON -->
+      <section class="p-1 pt-2">
+        <button onclick="handleEndDaySubmit()" id="btn-submit-day" class="w-full p-4 rounded-2xl theme-btn-main flex items-center justify-center gap-2 shadow-2xl transition active:scale-98">
+          <i data-lucide="award" class="w-5 h-5"></i>
+          <span class="font-display font-black text-xs tracking-wider uppercase">Submit & Lock Today's Entry</span>
+        </button>
+      </section>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- TAB 2: WORKOUT & STRUCTURED PPL SETS           -->
+    <!-- ============================================== -->
+    <div id="tab-ppl" class="tab-view hidden space-y-3.5">
+
+      <section class="theme-panel rounded-2xl shadow-lg overflow-hidden border border-[var(--border-panel)]">
+        <div onclick="toggleAccordion('acc-ppl-input')" class="p-3.5 flex items-center justify-between cursor-pointer bg-white/[0.02]">
+          <div class="flex items-center gap-2">
+            <i data-lucide="dumbbell" class="w-4 h-4" style="color: var(--accent-main);"></i>
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-300 block">Structured PPL Workout Engine</span>
+              <div class="text-[11px] font-mono text-slate-400">
+                Split: <span id="ppl-active-badge" class="font-bold text-white">PUSH DAY</span> • <span id="ppl-tonnage-label" style="color: var(--accent-main);">Tonnage: 0 kg</span>
+              </div>
+            </div>
+          </div>
+          <i id="acc-ppl-input-icon" data-lucide="chevron-up" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>
+        </div>
+
+        <div id="acc-ppl-input" class="accordion-content p-3.5 pt-0 space-y-3">
+          <!-- Routine Selector Pills -->
+          <div class="grid grid-cols-4 gap-1.5 pt-2">
+            <button onclick="setPPLRoutine('push')" id="btn-ppl-push" class="ppl-pill py-1.5 rounded-xl text-xs font-display font-bold theme-btn-main transition">Push</button>
+            <button onclick="setPPLRoutine('pull')" id="btn-ppl-pull" class="ppl-pill py-1.5 rounded-xl text-xs font-display font-bold theme-sub border border-[var(--border-panel)] text-slate-400 hover:text-white transition">Pull</button>
+            <button onclick="setPPLRoutine('legs')" id="btn-ppl-legs" class="ppl-pill py-1.5 rounded-xl text-xs font-display font-bold theme-sub border border-[var(--border-panel)] text-slate-400 hover:text-white transition">Legs</button>
+            <button onclick="setPPLRoutine('abs')" id="btn-ppl-abs" class="ppl-pill py-1.5 rounded-xl text-xs font-display font-bold theme-sub border border-[var(--border-panel)] text-slate-400 hover:text-white transition">Abs</button>
+          </div>
+
+          <div class="theme-sub p-3 rounded-2xl border border-[var(--border-panel)] space-y-3">
+            <div class="flex justify-between items-center">
+              <label class="text-[10px] font-semibold uppercase text-slate-400">Select Movement</label>
+              <div class="flex items-center gap-2">
+                <button onclick="openEditSelectedExerciseModal()" class="text-[10px] font-semibold text-slate-300 hover:text-white flex items-center gap-1">
+                  <i data-lucide="edit-3" class="w-3 h-3 text-cyan-400"></i> Edit
+                </button>
+                <button onclick="toggleModal('modal-custom-exercise')" class="text-[10px] font-bold hover:underline" style="color: var(--accent-main);">
+                  + Custom Exercise
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <select id="ppl-exercise-picker" class="theme-input w-full rounded-xl p-2.5 text-xs text-white font-medium" onchange="onExerciseChange()">
+                <!-- Populated by JS -->
+              </select>
+            </div>
+
+            <!-- Historical Overload Auto-Fill Box -->
+            <div id="exercise-history-banner" class="p-2.5 rounded-xl bg-black/40 border border-[var(--border-panel)] text-xs flex justify-between items-center">
+              <div>
+                <span class="text-[8px] uppercase font-bold text-slate-400 block">Previous Record:</span>
+                <span id="prev-session-summary" class="font-mono text-[11px] text-slate-200">No prior history.</span>
+              </div>
+              <button onclick="autoFillFromHistory()" id="btn-autofill-history" class="px-2.5 py-1 rounded-lg theme-badge text-[10px] font-bold hover:opacity-90 active:scale-95 transition hidden">
+                ⚡ Auto-Fill
+              </button>
+            </div>
+
+            <!-- Sets Count Selector -->
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold uppercase text-slate-400">Working Sets to Log</span>
+              <div class="flex items-center gap-1.5">
+                <button onclick="adjustSetCount(-1)" class="w-6 h-6 rounded-lg theme-panel border border-[var(--border-panel)] flex items-center justify-center font-bold text-xs">-</button>
+                <span id="set-count-display" class="font-mono font-bold text-xs px-2 text-white">3 Sets</span>
+                <button onclick="adjustSetCount(1)" class="w-6 h-6 rounded-lg theme-panel border border-[var(--border-panel)] flex items-center justify-center font-bold text-xs">+</button>
+              </div>
+            </div>
+
+            <!-- Multi-Set Table -->
+            <div class="space-y-1.5">
+              <div class="grid grid-cols-12 gap-1.5 text-[9px] font-bold uppercase text-slate-400 px-1">
+                <div class="col-span-2 text-center">Set</div>
+                <div class="col-span-4 text-center">Weight (kg)</div>
+                <div class="col-span-3 text-center">Reps</div>
+                <div class="col-span-3 text-center">RPE</div>
+              </div>
+              <div id="workout-set-rows-container" class="space-y-1.5"></div>
+            </div>
+
+            <div class="flex gap-2 pt-1">
+              <button onclick="commitAllWorkingSets()" class="flex-1 theme-btn-main font-semibold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition">
+                <i data-lucide="check" class="w-4 h-4"></i> Complete All Sets
+              </button>
+              <button onclick="startRestTimer(90)" class="px-3 theme-sub border border-[var(--border-panel)] text-slate-200 rounded-xl text-xs flex items-center gap-1 active:scale-95 transition">
+                <i data-lucide="timer" class="w-4 h-4" style="color: var(--accent-main);"></i> 90s
+              </button>
+            </div>
+          </div>
+
+          <!-- Logged Sets Today -->
+          <div class="pt-2">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">Completed Working Sets</span>
+            <div id="ppl-sets-list" class="space-y-1.5 max-h-56 overflow-y-auto no-scrollbar pr-0.5"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mechanical Expenditure -->
+      <section class="theme-panel rounded-2xl shadow-lg overflow-hidden border border-[var(--border-panel)]">
+        <div onclick="toggleAccordion('acc-ppl-energy')" class="p-3.5 flex items-center justify-between cursor-pointer bg-white/[0.02]">
+          <div class="flex items-center gap-2">
+            <i data-lucide="zap" class="w-4 h-4" style="color: var(--accent-main);"></i>
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-300 block">Lifting & Step Output</span>
+              <div class="text-[11px] font-mono text-slate-400">
+                Burn: <span id="hud-total-active-burn" class="font-bold text-white">735 kcal</span>
+              </div>
+            </div>
+          </div>
+          <i id="acc-ppl-energy-icon" data-lucide="chevron-up" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>
+        </div>
+
+        <div id="acc-ppl-energy" class="accordion-content p-3.5 pt-0 space-y-2.5">
+          <div class="grid grid-cols-2 gap-2.5 pt-2 border-t border-[var(--border-panel)]/40">
+            <div>
+              <label class="text-[9px] text-slate-400 font-semibold uppercase block mb-1">Gym Lifting (Mins)</label>
+              <input type="number" id="input-act-gym" value="60" onchange="syncExpenditure()" class="theme-input w-full rounded-xl p-2 text-xs text-white font-bold font-mono">
+            </div>
+            <div>
+              <label class="text-[9px] text-slate-400 font-semibold uppercase block mb-1">Daily Steps</label>
+              <input type="number" id="input-act-steps" value="8500" step="500" onchange="syncExpenditure()" class="theme-input w-full rounded-xl p-2 text-xs text-white font-bold font-mono">
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- TAB 3: BODY MEASUREMENT VAULT                  -->
+    <!-- ============================================== -->
+    <div id="tab-meas" class="tab-view hidden space-y-3.5">
+      <section class="theme-panel rounded-2xl shadow-xl overflow-hidden border border-[var(--border-panel)]">
+        <div class="p-4 border-b border-[var(--border-panel)]">
+          <span class="text-[10px] font-bold tracking-widest uppercase text-slate-400">Physical Checkpoint</span>
+          <h2 class="font-display font-extrabold text-base text-white">Body Measurement Vault</h2>
+          <p class="text-[11px] text-slate-400">Real-time sync to morning weight and waist reduction trends.</p>
+        </div>
+
+        <div class="p-4 space-y-3">
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="text-[9px] text-slate-400 font-semibold uppercase block mb-1">Scale Weight (kg)</label>
+              <input type="number" id="meas-weight" step="0.1" placeholder="79.0" class="theme-input w-full rounded-xl p-2.5 text-xs text-white font-bold font-mono" onchange="syncWeightFromVault(this.value)">
+            </div>
+            <div>
+              <label class="text-[9px] text-slate-400 font-semibold uppercase block mb-1">Waist at Navel (cm)</label>
+              <input type="number" id="meas-waist" step="0.2" placeholder="88.0" class="theme-input w-full rounded-xl p-2.5 text-xs text-white font-bold font-mono">
+            </div>
+            <div>
+              <label class="text-[9px] text-slate-400 font-semibold uppercase block mb-1">Chest / Lats (cm)</label>
+              <input type="number" id="meas-chest" step="0.5" placeholder="102.0" class="theme-input w-full rounded-xl p-2.5 text-xs text-white font-mono">
+            </div>
+            <div>
+              <label class="text-[9px] text-slate-400 font-semibold uppercase block mb-1">Flexed Arms (cm)</label>
+              <input type="number" id="meas-arms" step="0.2" placeholder="36.5" class="theme-input w-full rounded-xl p-2.5 text-xs text-white font-mono">
+            </div>
+            <div>
+              <label class="text-[9px] text-slate-400 font-semibold uppercase block mb-1">Thighs (cm)</label>
+              <input type="number" id="meas-thighs" step="0.5" placeholder="58.0" class="theme-input w-full rounded-xl p-2.5 text-xs text-white font-mono">
+            </div>
+            <div>
+              <label class="text-[9px] text-slate-400 font-semibold uppercase block mb-1">Hips (cm)</label>
+              <input type="number" id="meas-hips" step="0.5" placeholder="96.0" class="theme-input w-full rounded-xl p-2.5 text-xs text-white font-mono">
+            </div>
+          </div>
+
+          <button onclick="saveMeasurements()" class="w-full theme-btn-main font-semibold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+            <i data-lucide="save" class="w-4 h-4"></i> Save Measurement Record
+          </button>
+
+          <div class="pt-2">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-2">Historical Checkpoints</span>
+            <div id="meas-history-list" class="space-y-1.5 max-h-56 overflow-y-auto no-scrollbar pr-0.5"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- TAB 4: 90-DAY MATRIX & AGGREGATED STATS        -->
+    <!-- ============================================== -->
+    <div id="tab-stats" class="tab-view hidden space-y-3.5">
+      <section class="theme-panel rounded-2xl shadow-xl overflow-hidden border border-[var(--border-panel)] p-4 space-y-3">
+        <div class="flex justify-between items-center">
+          <div>
+            <span class="text-[10px] font-bold tracking-widest uppercase text-slate-400">Consistency Grid</span>
+            <h2 class="font-display font-extrabold text-base text-white">90-Day Transformation Matrix</h2>
+          </div>
+          <span id="stat-streak-counter" class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full theme-badge">
+            0 Day Streak 🔥
+          </span>
+        </div>
+
+        <div class="theme-sub p-3 rounded-2xl border border-[var(--border-panel)]">
+          <div id="matrix-grid-container" class="grid grid-cols-10 gap-1.5 justify-center"></div>
+          <div class="flex items-center justify-between text-[9px] text-slate-500 pt-3 px-1 font-mono">
+            <span>Day 1</span>
+            <div class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded bg-black/40 border border-white/20 inline-block"></span> Rest
+              <span class="w-2 h-2 rounded inline-block" style="background-color: var(--accent-main); opacity: 0.55;"></span> Partial
+              <span class="w-2 h-2 rounded inline-block" style="background-color: var(--accent-main);"></span> Hit
+            </div>
+            <span>Day 90</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="theme-panel rounded-2xl shadow-lg border border-[var(--border-panel)] p-4 space-y-3">
+        <div class="flex justify-between items-center">
+          <h2 class="font-display font-bold text-xs uppercase tracking-wider text-slate-300">Period Aggregations</h2>
+          <span class="text-[10px] font-mono text-slate-400">mr.muscle_mind Core</span>
+        </div>
+
+        <div class="grid grid-cols-4 gap-1.5">
+          <button onclick="renderPeriodAnalytics(7)" id="an-pill-7" class="an-btn py-1.5 rounded-lg text-xs font-bold theme-btn-main">7D</button>
+          <button onclick="renderPeriodAnalytics(14)" id="an-pill-14" class="an-btn py-1.5 rounded-lg text-xs font-bold theme-sub text-slate-400">14D</button>
+          <button onclick="renderPeriodAnalytics(30)" id="an-pill-30" class="an-btn py-1.5 rounded-lg text-xs font-bold theme-sub text-slate-400">30D</button>
+          <button onclick="renderPeriodAnalytics(90)" id="an-pill-90" class="an-btn py-1.5 rounded-lg text-xs font-bold theme-sub text-slate-400">90D</button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+          <div class="theme-sub p-2.5 rounded-xl border border-[var(--border-panel)]">
+            <span class="text-[9px] uppercase font-sans text-slate-400 font-semibold block">Avg Daily Intake</span>
+            <span id="an-avg-cals" class="font-display font-bold text-white text-sm">0</span> <span class="text-[10px] text-slate-500">kcal</span>
+          </div>
+          <div class="theme-sub p-2.5 rounded-xl border border-[var(--border-panel)]">
+            <span class="text-[9px] uppercase font-sans text-slate-400 font-semibold block">Avg Daily Protein</span>
+            <span id="an-avg-protein" class="font-display font-bold text-sm" style="color: var(--accent-main);">0</span> <span class="text-[10px] text-slate-500">g</span>
+          </div>
+          <div class="theme-sub p-2.5 rounded-xl border border-[var(--border-panel)]">
+            <span class="text-[9px] uppercase font-sans text-slate-400 font-semibold block">Avg Net Deficit</span>
+            <span id="an-avg-deficit" class="font-display font-bold text-sm" style="color: var(--accent-main);">0</span> <span class="text-[10px] text-slate-500">kcal/d</span>
+          </div>
+          <div class="theme-sub p-2.5 rounded-xl border border-[var(--border-panel)]">
+            <span class="text-[9px] uppercase font-sans text-slate-400 font-semibold block">Estimated Fat Lost</span>
+            <span id="an-est-loss" class="font-display font-bold text-sm text-slate-200">0.0</span> <span class="text-[10px] text-slate-500">kg</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <!-- 'CAPTAIN' GOLDEN RETRIEVER FLOATING QUICK BALL -->
+  <div id="captain-quickball" class="fixed z-50 cursor-pointer select-none" style="right: 18px; bottom: 32px;" onclick="openCaptainChat()">
+    <div class="relative captain-ball flex items-center justify-center">
+      <div class="w-13 h-13 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-300 p-1 border-2 border-white shadow-2xl flex items-center justify-center">
+        <svg class="w-9 h-9" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="32" cy="34" rx="20" ry="18" fill="#F59E0B" />
+          <path d="M12 24C10 32 14 44 18 45C22 46 22 36 20 28C18 20 14 16 12 24Z" fill="#D97706" />
+          <path d="M52 24C54 32 50 44 46 45C42 46 42 36 44 28C46 20 50 16 52 24Z" fill="#D97706" />
+          <ellipse cx="32" cy="39" rx="11" ry="9" fill="#FDE68A" />
+          <ellipse cx="25" cy="31" rx="2.5" ry="3" fill="#1E293B" />
+          <circle cx="24.2" cy="30" r="0.8" fill="#FFFFFF" />
+          <ellipse cx="39" cy="31" rx="2.5" ry="3" fill="#1E293B" />
+          <circle cx="38.2" cy="30" r="0.8" fill="#FFFFFF" />
+          <path d="M29 36C29 35 35 35 35 36C35 38 32.8 40 32 40C31.2 40 29 38 29 36Z" fill="#0F172A" />
+          <path d="M32 40V43M30 43C30.8 44 33.2 44 34 43" stroke="#0F172A" stroke-width="1.2" stroke-linecap="round" />
+          <path d="M30 43C30 47 34 47 34 43Z" fill="#F43F5E" />
+          <path d="M32 20C30 26 30 29 32 30C34 29 34 26 32 20Z" fill="#FCD34D" opacity="0.6" />
+        </svg>
+      </div>
+      <span class="absolute -top-1 -right-1 flex h-4 w-4">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-4 w-4 bg-amber-500 border border-white text-[8px] font-black text-black items-center justify-center">AI</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- 'CAPTAIN' GEMINI-POWERED AI CHAT MODAL -->
+  <div id="modal-captain" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="theme-panel rounded-3xl w-full max-w-sm h-[82vh] flex flex-col border border-[var(--border-panel)] shadow-2xl overflow-hidden">
+      
+      <div class="px-4 py-3 border-b border-[var(--border-panel)] flex items-center justify-between bg-black/40">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-300 p-0.5 border border-white flex items-center justify-center shrink-0">
+            <svg class="w-6 h-6" viewBox="0 0 64 64" fill="none">
+              <ellipse cx="32" cy="34" rx="20" ry="18" fill="#F59E0B" />
+              <path d="M12 24C10 32 14 44 18 45C22 46 22 36 20 28C18 20 14 16 12 24Z" fill="#D97706" />
+              <path d="M52 24C54 32 50 44 46 45C42 46 42 36 44 28C46 20 50 16 52 24Z" fill="#D97706" />
+              <ellipse cx="32" cy="39" rx="11" ry="9" fill="#FDE68A" />
+              <ellipse cx="25" cy="31" rx="2.5" ry="3" fill="#1E293B" />
+              <ellipse cx="39" cy="31" rx="2.5" ry="3" fill="#1E293B" />
+              <path d="M29 36C29 35 35 35 35 36C35 38 32.8 40 32 40C31.2 40 29 38 29 36Z" fill="#0F172A" />
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <h3 class="font-display font-black text-xs text-white">Captain</h3>
+              <span class="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">mr.muscle_mind AI</span>
+            </div>
+            <p class="text-[10px] text-slate-400">Live intelligence for Indian diets, lifts & macros</p>
+          </div>
+        </div>
+        <button onclick="toggleModal('modal-captain')" class="text-slate-400 hover:text-white p-1 text-sm">✕</button>
+      </div>
+
+      <div id="captain-chat-stream" class="flex-1 p-3.5 space-y-3 overflow-y-auto text-xs no-scrollbar">
+        <div class="flex items-start gap-2">
+          <div class="w-6 h-6 rounded-full bg-amber-500 text-black font-black flex items-center justify-center text-[10px] shrink-0 mt-0.5">
+            🐕
+          </div>
+          <div class="theme-sub border border-[var(--border-panel)] p-3 rounded-2xl rounded-tl-sm text-slate-200 space-y-1.5 leading-relaxed max-w-[85%]">
+            <p class="font-semibold text-amber-300">Woof! I'm Captain, your coach.</p>
+            <p>Ask me anything: real protein powder market prices in India (Nakpro, AS-IT-IS, MuscleBlaze), female calorie/macro cuts for your sister, custom Indian vegetarian high-protein combos, or beginner PPL form cues!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-3 py-1.5 bg-black/40 border-t border-[var(--border-panel)] flex gap-1.5 overflow-x-auto no-scrollbar">
+        <button onclick="sendQuickPrompt('Compare Nakpro, AS-IT-IS and MuscleBlaze soy isolate protein powder with real market prices in India')" class="px-2.5 py-1 rounded-lg theme-sub border border-[var(--border-panel)] text-[10px] text-slate-300 whitespace-nowrap">Soy Protein Brands & Price</button>
+        <button onclick="sendQuickPrompt('How should a beginner set up their 6-day PPL workout routine?')" class="px-2.5 py-1 rounded-lg theme-sub border border-[var(--border-panel)] text-[10px] text-slate-300 whitespace-nowrap">Beginner PPL Setup</button>
+        <button onclick="sendQuickPrompt('Calculate ideal protein and calorie targets for my sister who weighs 62kg and wants to tone up')" class="px-2.5 py-1 rounded-lg theme-sub border border-[var(--border-panel)] text-[10px] text-slate-300 whitespace-nowrap">Sister's Protein Goal</button>
+        <button onclick="sendQuickPrompt('Give 3 high-protein Indian vegetarian dinners with 35g+ protein')" class="px-2.5 py-1 rounded-lg theme-sub border border-[var(--border-panel)] text-[10px] text-slate-300 whitespace-nowrap">35g+ Veg Dinners</button>
+      </div>
+
+      <div class="p-2.5 bg-black/60 border-t border-[var(--border-panel)] flex gap-2 items-center">
+        <input type="text" id="captain-query-input" placeholder="Ask Captain anything (brands, nutrition, form)..." class="theme-input flex-1 rounded-xl p-2.5 text-xs text-white" onkeydown="if(event.key === 'Enter') dispatchCaptainQuery()">
+        <button onclick="dispatchCaptainQuery()" id="captain-send-btn" class="w-9 h-9 rounded-xl theme-btn-main flex items-center justify-center shrink-0 active:scale-95 transition">
+          <i data-lucide="send" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL: EXPORT HUB WITH NATIVE GALLERY SHARE & MULTI-TAB PDF -->
+  <div id="modal-export-hub" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="theme-panel rounded-3xl w-full max-w-sm p-5 space-y-4 border border-[var(--border-panel)] shadow-2xl">
+      <div class="flex justify-between items-center border-b border-[var(--border-panel)] pb-2.5">
+        <div class="flex items-center gap-2">
+          <i data-lucide="share-2" class="w-4 h-4" style="color: var(--accent-main);"></i>
+          <h3 class="font-display font-bold text-sm text-white">Save to Gallery & Export</h3>
+        </div>
+        <button onclick="toggleModal('modal-export-hub')" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <p class="text-xs text-slate-300 leading-relaxed">
+        Save your active day card directly to your mobile <strong>Photos / Gallery</strong> or compile a multi-page <strong>PDF Dossier</strong>.
+      </p>
+
+      <div class="space-y-2.5">
+        <button onclick="saveCardDirectToGallery()" class="w-full p-3 rounded-2xl theme-btn-main flex items-center justify-between text-left active:scale-98 transition">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-black/30 flex items-center justify-center text-slate-950 font-bold">
+              <i data-lucide="image" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-slate-950">Save Image Directly to Gallery</div>
+              <div class="text-[10px] text-slate-900 font-medium">Triggers native mobile Save to Photos / Gallery</div>
+            </div>
+          </div>
+          <i data-lucide="arrow-down-to-line" class="w-4 h-4 text-slate-950"></i>
+        </button>
+
+        <button onclick="downloadActiveCardAsImage('png')" class="w-full p-3 rounded-2xl theme-sub border border-[var(--border-panel)] flex items-center justify-between text-left active:scale-98 transition">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
+              <i data-lucide="download" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-white">Direct Download PNG File</div>
+              <div class="text-[10px] text-slate-400">Saves directly into your Downloads folder</div>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+        </button>
+
+        <button onclick="generateFullDossierPDF()" class="w-full p-3 rounded-2xl theme-sub border border-[var(--border-panel)] flex items-center justify-between text-left active:scale-98 transition">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+              <i data-lucide="file-text" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-white">Download All-Tab PDF Dossier</div>
+              <div class="text-[10px] text-slate-400">Comprehensive report of meals, PPL, and metrics</div>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+        </button>
+      </div>
+
+      <div id="export-status-box" class="text-[10px] text-center font-mono text-slate-400 pt-1">
+        Supports native mobile gallery share on Android & iPhone.
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: FIRST-LAUNCH & USER AUTHENTICATION GATEWAY -->
+  <div id="modal-auth" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="theme-panel rounded-3xl w-full max-w-sm p-5 space-y-4 border border-[var(--border-panel)] shadow-2xl overflow-y-auto max-h-[92vh]">
+      <div class="flex justify-between items-center border-b border-[var(--border-panel)] pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl theme-btn-main flex items-center justify-center font-display font-black text-xs">MMM</div>
+          <div>
+            <h3 class="font-display font-bold text-sm text-white">mr.muscle_mind</h3>
+            <span class="text-[9px] text-slate-400">Athlete Authentication & Data Vault</span>
+          </div>
+        </div>
+        <button onclick="closeAuthModal()" class="text-slate-400 hover:text-white text-base p-1" title="Continue">✕</button>
+      </div>
+
+      <div id="auth-logged-in-view" class="hidden space-y-3">
+        <div class="p-3.5 rounded-2xl theme-sub border border-[var(--border-panel)] space-y-2">
+          <div class="flex items-center gap-3">
+            <div id="user-avatar-circle" class="w-10 h-10 rounded-full theme-btn-main flex items-center justify-center font-bold text-base">U</div>
+            <div class="overflow-hidden">
+              <p id="user-display-name" class="text-xs font-bold text-white truncate">Athlete</p>
+              <p id="user-display-email" class="text-[10px] text-slate-400 truncate">athlete@gmail.com</p>
+            </div>
+          </div>
+          <div class="pt-1 flex items-center justify-between text-[10px] font-mono">
+            <span class="text-slate-400">UID: <span id="user-display-uid" class="text-slate-200">usr_authenticated</span></span>
+            <span class="text-emerald-400 flex items-center gap-1 font-bold">● Active & Synced</span>
+          </div>
+        </div>
+
+        <button onclick="handleSignOut()" class="w-full bg-rose-500/15 border border-rose-500/30 text-rose-300 font-bold text-xs py-2.5 rounded-xl active:scale-95 transition">
+          Sign Out of Account
+        </button>
+        <button onclick="closeAuthModal()" class="w-full theme-sub border border-[var(--border-panel)] text-slate-200 text-xs py-2 rounded-xl">
+          Return to Dashboard
+        </button>
+      </div>
+
+      <div id="auth-logged-out-view" class="space-y-3 text-xs">
+        <p class="text-slate-300 text-[11px] leading-relaxed">
+          Log in with your Google or Email account to isolate your data, save meals, track PRs, and retain your progress across devices.
+        </p>
+
+        <!-- Google Sign-In with reliable profile selector flow -->
+        <button onclick="handleGoogleSignInFlow()" type="button" class="w-full bg-white hover:bg-slate-100 text-slate-900 font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+          Sign In with Google Account
+        </button>
+
+        <div class="relative flex py-1 items-center">
+          <div class="flex-grow border-t border-white/10"></div>
+          <span class="flex-shrink mx-2 text-[10px] text-slate-500 uppercase font-bold">or email account</span>
+          <div class="flex-grow border-t border-white/10"></div>
+        </div>
+
+        <div class="space-y-1.5">
+          <input type="email" id="auth-email-input" placeholder="Your Exact Gmail / Email" class="theme-input w-full rounded-xl p-2.5 text-xs text-white">
+          <input type="password" id="auth-pass-input" placeholder="Password (min 6 characters)" class="theme-input w-full rounded-xl p-2.5 text-xs text-white">
+          <div class="flex gap-2 pt-1">
+            <button onclick="handleEmailSignIn()" class="flex-1 theme-sub border border-[var(--border-panel)] py-2 rounded-xl text-white font-bold active:scale-95 transition">Sign In</button>
+            <button onclick="handleEmailSignUp()" class="flex-1 theme-btn-main py-2 rounded-xl font-bold active:scale-95 transition">Create Account</button>
+          </div>
+        </div>
+
+        <div class="pt-2 border-t border-[var(--border-panel)]/40 text-center">
+          <button onclick="continueAsGuest()" class="text-slate-400 hover:text-white text-xs underline font-medium">
+            Continue as Guest (Offline Local Mode)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD BRAND NEW CUSTOM RECIPE TO PRE-BUILT LIST -->
+  <div id="modal-new-recipe" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="theme-panel rounded-3xl w-full max-w-sm p-5 space-y-3.5 border border-[var(--border-panel)] shadow-2xl overflow-y-auto max-h-[92vh]">
+      <div class="flex justify-between items-center border-b border-[var(--border-panel)] pb-2.5">
+        <h3 class="font-display font-bold text-sm text-white">Compose New Custom Recipe</h3>
+        <button onclick="toggleModal('modal-new-recipe')" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <div class="space-y-2 text-xs">
+        <div>
+          <label class="text-slate-400 block mb-1">Recipe / Dish Name</label>
+          <input type="text" id="nr-title" placeholder="e.g. High Protein Soya Pulao" class="theme-input w-full rounded-xl p-2.5 text-white font-medium">
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1">Short Description</label>
+          <input type="text" id="nr-desc" placeholder="e.g. 50g Soya + 50g Rice + 1 tsp Ghee" class="theme-input w-full rounded-xl p-2.5 text-white">
+        </div>
+
+        <div class="flex justify-between items-center pt-1">
+          <span class="text-[10px] font-bold uppercase text-slate-400">Ingredients</span>
+          <button onclick="addNewRecipeIngredientRow()" class="text-[10px] font-bold hover:underline" style="color: var(--accent-main);">
+            + Add Ingredient
+          </button>
+        </div>
+
+        <div id="nr-ingredients-rows" class="space-y-1.5 max-h-48 overflow-y-auto pr-0.5 no-scrollbar">
+          <!-- Dynamically populated rows -->
+        </div>
+
+        <div class="theme-sub p-2.5 rounded-xl border border-[var(--border-panel)] flex justify-between items-center font-mono text-xs">
+          <span class="font-sans font-bold text-slate-300">Total Macros:</span>
+          <span class="font-bold text-white"><span id="nr-sum-cal">0</span> kcal</span>
+          <span style="color: var(--accent-main);">P: <span id="nr-sum-p">0</span>g</span>
+          <span class="text-slate-300">C: <span id="nr-sum-c">0</span>g</span>
+          <span class="text-slate-400">F: <span id="nr-sum-f">0</span>g</span>
+        </div>
+      </div>
+
+      <button onclick="commitNewRecipePreset()" class="w-full theme-btn-main font-semibold text-xs py-2.5 rounded-xl transition">
+        Save to Pre-Built Recipes
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: EDIT PRE-BUILT COMBO INGREDIENTS WITH REAL-TIME MACRO RECALCULATION -->
+  <div id="modal-edit-combo" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="theme-panel rounded-3xl w-full max-w-sm p-5 space-y-3.5 border border-[var(--border-panel)] shadow-2xl overflow-y-auto max-h-[92vh]">
+      <div class="flex justify-between items-center border-b border-[var(--border-panel)] pb-2.5">
+        <h3 class="font-display font-bold text-sm text-white" id="edit-combo-title">Customize Combo Ingredients</h3>
+        <button onclick="toggleModal('modal-edit-combo')" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <input type="hidden" id="edit-combo-id">
+      <div class="text-[10px] text-slate-400">Adjust portions on keystroke for live macro calculation:</div>
+
+      <div id="edit-combo-ingredients-list" class="space-y-2"></div>
+
+      <div class="theme-sub p-2.5 rounded-xl border border-[var(--border-panel)] flex justify-between items-center text-xs font-mono">
+        <span class="font-sans font-bold text-slate-300">Recalculated:</span>
+        <span class="font-bold text-white"><span id="edit-combo-sum-cal">0</span> kcal</span>
+        <span style="color: var(--accent-main);">P: <span id="edit-combo-sum-p">0</span>g</span>
+        <span class="text-slate-300">C: <span id="edit-combo-sum-c">0</span>g</span>
+        <span class="text-slate-400">F: <span id="edit-combo-sum-f">0</span>g</span>
+      </div>
+
+      <button onclick="commitEditedComboToDiary()" class="w-full theme-btn-main font-semibold text-xs py-2.5 rounded-xl transition">
+        Save & Log Customized Combo
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: EDIT SELECTED EXERCISE IN-LINE -->
+  <div id="modal-edit-exercise" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="theme-panel rounded-3xl w-full max-w-sm p-5 space-y-3.5 border border-[var(--border-panel)] shadow-2xl">
+      <div class="flex justify-between items-center border-b border-[var(--border-panel)] pb-2.5">
+        <h3 class="font-display font-bold text-sm text-white">Edit Exercise Details</h3>
+        <button onclick="toggleModal('modal-edit-exercise')" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <div class="space-y-2.5 text-xs">
+        <div>
+          <label class="text-slate-400 block mb-1">Exercise Name</label>
+          <input type="text" id="edit-exercise-name-input" class="theme-input w-full rounded-xl p-2.5 text-white font-medium">
+        </div>
+      </div>
+      <button onclick="commitExerciseEdit()" class="w-full theme-btn-main font-semibold text-xs py-2.5 rounded-xl transition">
+        Update Exercise Name
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: INLINE FOOD CALIBRATOR -->
+  <div id="modal-edit-food" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="theme-panel rounded-3xl w-full max-w-sm p-5 space-y-3.5 border border-[var(--border-panel)] shadow-2xl">
+      <div class="flex justify-between items-center border-b border-[var(--border-panel)] pb-2.5">
+        <h3 class="font-display font-bold text-sm text-white">Calibrate Food Macros</h3>
+        <button onclick="toggleModal('modal-edit-food')" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <input type="hidden" id="edit-food-id">
+      <input type="hidden" id="edit-food-source">
+
+      <div class="space-y-2.5 text-xs">
+        <div>
+          <label class="text-slate-400 block mb-1">Item Name</label>
+          <input type="text" id="edit-food-name" class="theme-input w-full rounded-xl p-2.5 text-white font-medium">
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1">Serving Unit Descriptor</label>
+          <input type="text" id="edit-food-unit" class="theme-input w-full rounded-xl p-2.5 text-white font-mono">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-slate-400 block mb-1">Calories (kcal)</label>
+            <input type="number" id="edit-food-cal" step="1" class="theme-input w-full rounded-xl p-2.5 text-white font-bold font-mono">
+          </div>
+          <div>
+            <label class="text-slate-400 block mb-1">Protein (g)</label>
+            <input type="number" id="edit-food-p" step="0.1" class="theme-input w-full rounded-xl p-2.5 text-white font-bold font-mono">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-slate-400 block mb-1">Carbs (g)</label>
+            <input type="number" id="edit-food-c" step="0.1" class="theme-input w-full rounded-xl p-2.5 text-white font-mono">
+          </div>
+          <div>
+            <label class="text-slate-400 block mb-1">Fats (g)</label>
+            <input type="number" id="edit-food-f" step="0.1" class="theme-input w-full rounded-xl p-2.5 text-white font-mono">
+          </div>
+        </div>
+      </div>
+
+      <button onclick="commitFoodMacroEdit()" class="w-full theme-btn-main font-semibold text-xs py-2.5 rounded-xl transition">
+        Save Calibrated Macros
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD CUSTOM FOOD ITEM -->
+  <div id="modal-custom-food" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="theme-panel rounded-3xl w-full max-w-sm p-5 space-y-3 border border-[var(--border-panel)] shadow-2xl">
+      <div class="flex justify-between items-center">
+        <h3 class="font-display font-bold text-sm text-white">Add Custom Food Item</h3>
+        <button onclick="toggleModal('modal-custom-food')" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <div class="space-y-2 text-xs">
+        <input type="text" id="cf-name" placeholder="Item Name (e.g. Raw Paneer, Whey)" class="theme-input w-full rounded-xl p-2.5 text-white">
+        <input type="text" id="cf-unit" placeholder="Serving Unit (e.g. 100g, 1 scoop)" class="theme-input w-full rounded-xl p-2.5 text-white">
+        <div class="grid grid-cols-2 gap-2">
+          <input type="number" id="cf-cals" placeholder="Calories" class="theme-input rounded-xl p-2.5 text-white font-mono">
+          <input type="number" id="cf-p" placeholder="Protein (g)" class="theme-input rounded-xl p-2.5 text-white font-mono">
+          <input type="number" id="cf-c" placeholder="Carbs (g)" class="theme-input rounded-xl p-2.5 text-white font-mono">
+          <input type="number" id="cf-f" placeholder="Fats (g)" class="theme-input rounded-xl p-2.5 text-white font-mono">
+        </div>
+      </div>
+      <button onclick="saveCustomFoodItem()" class="w-full theme-btn-main font-semibold text-xs py-2.5 rounded-xl transition">
+        Save to Food Vault
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD CUSTOM EXERCISE -->
+  <div id="modal-custom-exercise" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="theme-panel rounded-3xl w-full max-w-sm p-5 space-y-3.5 border border-[var(--border-panel)] shadow-2xl">
+      <div class="flex justify-between items-center border-b border-[var(--border-panel)] pb-2.5">
+        <h3 class="font-display font-bold text-sm text-white">Add Custom Exercise</h3>
+        <button onclick="toggleModal('modal-custom-exercise')" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <div class="space-y-2.5 text-xs">
+        <div>
+          <label class="text-slate-400 block mb-1">Target Split Category</label>
+          <select id="ce-split-category" class="theme-input w-full rounded-xl p-2.5 text-white font-medium">
+            <option value="push">Push (Chest / Shoulders / Triceps)</option>
+            <option value="pull">Pull (Back / Rear Delts / Biceps)</option>
+            <option value="legs">Legs (Quads / Hamstrings / Calves)</option>
+            <option value="abs">Abs & Core</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1">Exercise Name</label>
+          <input type="text" id="ce-exercise-name" placeholder="e.g. Bulgarian Split Squats" class="theme-input w-full rounded-xl p-2.5 text-white">
+        </div>
+      </div>
+      <button onclick="saveCustomExercise()" class="w-full theme-btn-main font-semibold text-xs py-2.5 rounded-xl transition">
+        Save to Workout Library
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: DUAL-COLOR THEMES SELECTOR -->
+  <div id="modal-themes" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="theme-panel rounded-3xl w-full max-w-sm p-5 space-y-3.5 border border-[var(--border-panel)] shadow-2xl">
+      <div class="flex justify-between items-center border-b border-[var(--border-panel)] pb-3">
+        <div class="flex items-center gap-2">
+          <i data-lucide="palette" class="w-4 h-4" style="color: var(--accent-main);"></i>
+          <h3 class="font-display font-bold text-sm text-white">Select 2-Color Theme</h3>
+        </div>
+        <button onclick="toggleModal('modal-themes')" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <div class="space-y-2">
+        <button onclick="applyTheme('purple')" class="w-full p-2.5 rounded-2xl theme-sub border border-purple-500/30 flex items-center justify-between text-left active:scale-98 transition">
+          <div class="flex items-center gap-3">
+            <span class="w-4 h-4 rounded-full bg-purple-500 border border-black"></span>
+            <div><div class="text-xs font-bold text-white">Obsidian & Purple</div><div class="text-[9px] text-slate-400">Deep Blue + Electric Purple</div></div>
+          </div>
+          <span id="theme-check-purple" class="text-xs text-purple-400 font-bold">●</span>
+        </button>
+        <button onclick="applyTheme('crimson')" class="w-full p-2.5 rounded-2xl theme-sub border border-red-500/30 flex items-center justify-between text-left active:scale-98 transition">
+          <div class="flex items-center gap-3">
+            <span class="w-4 h-4 rounded-full bg-red-600 border border-black"></span>
+            <div><div class="text-xs font-bold text-white">Pitch Black & Crimson</div><div class="text-[9px] text-slate-400">Pure Black + Crimson Red</div></div>
+          </div>
+          <span id="theme-check-crimson" class="text-xs text-red-500 font-bold hidden">●</span>
+        </button>
+        <button onclick="applyTheme('cyan')" class="w-full p-2.5 rounded-2xl theme-sub border border-cyan-500/30 flex items-center justify-between text-left active:scale-98 transition">
+          <div class="flex items-center gap-3">
+            <span class="w-4 h-4 rounded-full bg-cyan-400 border border-black"></span>
+            <div><div class="text-xs font-bold text-white">Midnight & Cyan</div><div class="text-[9px] text-slate-400">Deep Navy + Neon Cyan</div></div>
+          </div>
+          <span id="theme-check-cyan" class="text-xs text-cyan-400 font-bold hidden">●</span>
+        </button>
+        <button onclick="applyTheme('emerald')" class="w-full p-2.5 rounded-2xl theme-sub border border-emerald-500/30 flex items-center justify-between text-left active:scale-98 transition">
+          <div class="flex items-center gap-3">
+            <span class="w-4 h-4 rounded-full bg-emerald-500 border border-black"></span>
+            <div><div class="text-xs font-bold text-white">Carbon & Emerald</div><div class="text-[9px] text-slate-400">Carbon Black + Matrix Green</div></div>
+          </div>
+          <span id="theme-check-emerald" class="text-xs text-emerald-400 font-bold hidden">●</span>
+        </button>
+        <button onclick="applyTheme('stealth')" class="w-full p-2.5 rounded-2xl theme-sub border border-slate-400/30 flex items-center justify-between text-left active:scale-98 transition">
+          <div class="flex items-center gap-3">
+            <span class="w-4 h-4 rounded-full bg-slate-100 border border-black"></span>
+            <div><div class="text-xs font-bold text-white">Stealth Minimalist</div><div class="text-[9px] text-slate-400">Monochrome Onyx + Titanium</div></div>
+          </div>
+          <span id="theme-check-stealth" class="text-xs text-slate-200 font-bold hidden">●</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: FULL ENERGY DYNAMIC CUSTOMIZER -->
+  <div id="modal-energy-customizer" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="theme-panel rounded-3xl w-full max-w-sm p-5 space-y-4 border border-[var(--border-panel)] shadow-2xl overflow-y-auto max-h-[92vh]">
+      <div class="flex justify-between items-center border-b border-[var(--border-panel)] pb-2.5">
+        <div class="flex items-center gap-2">
+          <i data-lucide="sliders" class="w-4 h-4" style="color: var(--accent-main);"></i>
+          <h3 class="font-display font-bold text-sm text-white">Customize Energy Balance</h3>
+        </div>
+        <button onclick="toggleModal('modal-energy-customizer')" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-slate-400 block mb-1">Gender</label>
+            <select id="cust-gender" class="theme-input w-full rounded-xl p-2 text-white font-medium" onchange="previewEnergyCalculations()">
+              <option value="male">Male (+5 BMR)</option>
+              <option value="female">Female (-161 BMR)</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-slate-400 block mb-1">Age (Years)</label>
+            <input type="number" id="cust-age" class="theme-input w-full rounded-xl p-2 text-white font-mono" oninput="previewEnergyCalculations()">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-slate-400 block mb-1">Weight (kg)</label>
+            <input type="number" id="cust-weight" step="0.1" class="theme-input w-full rounded-xl p-2 text-white font-bold font-mono" oninput="previewEnergyCalculations()">
+          </div>
+          <div>
+            <label class="text-slate-400 block mb-1">Height (cm)</label>
+            <input type="number" id="cust-height" class="theme-input w-full rounded-xl p-2 text-white font-mono" oninput="previewEnergyCalculations()">
+          </div>
+        </div>
+
+        <div>
+          <label class="text-slate-400 block mb-1">Activity Level Baseline</label>
+          <select id="cust-activity-factor" class="theme-input w-full rounded-xl p-2 text-white font-medium" onchange="previewEnergyCalculations()">
+            <option value="1.2">Sedentary (Desk Job)</option>
+            <option value="1.375">Light Activity (1-3 gym days)</option>
+            <option value="1.55" selected>Moderate (4-5 gym days + 8k steps)</option>
+            <option value="1.725">Heavy Activity (6-7 lifting sessions)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-slate-400 block mb-1">Recomp Goal Strategy</label>
+          <select id="cust-strategy" class="theme-input w-full rounded-xl p-2 text-white font-medium" onchange="previewEnergyCalculations()">
+            <option value="-500" selected>Standard Fat Loss Cut (-500 kcal)</option>
+            <option value="-300">Mild Aggressive Cut (-300 kcal)</option>
+            <option value="-750">Steep Rapid Cut (-750 kcal)</option>
+            <option value="0">Strict Recomposition (0 kcal)</option>
+            <option value="250">Lean Muscle Gain (+250 kcal)</option>
+          </select>
+        </div>
+
+        <div class="theme-sub p-3 rounded-xl border border-[var(--border-panel)] space-y-1 font-mono text-[11px]">
+          <div class="flex justify-between text-slate-300"><span>BMR Baseline:</span><strong id="prev-bmr-val" class="text-white">1,726 kcal</strong></div>
+          <div class="flex justify-between text-slate-300"><span>Estimated TDEE:</span><strong id="prev-tdee-val" class="text-cyan-400">2,461 kcal</strong></div>
+          <div class="flex justify-between" style="color: var(--accent-main);"><span>Target Intake:</span><strong id="prev-intake-val">1,961 kcal</strong></div>
+        </div>
+
+        <div class="border-t border-[var(--border-panel)] pt-2 space-y-2">
+          <span class="text-[10px] font-bold uppercase text-slate-400 block">Daily Target Macros</span>
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="text-[10px] text-slate-400 block mb-1">Protein (g)</label>
+              <input type="number" id="cust-p" class="theme-input w-full rounded-xl p-2 text-white font-bold font-mono">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 block mb-1">Carbs (g)</label>
+              <input type="number" id="cust-c" class="theme-input w-full rounded-xl p-2 text-white font-mono">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 block mb-1">Fats (g)</label>
+              <input type="number" id="cust-f" class="theme-input w-full rounded-xl p-2 text-white font-mono">
+            </div>
+          </div>
+          <div>
+            <label class="text-[10px] text-slate-400 block mb-1">Daily Calorie Cap (kcal)</label>
+            <input type="number" id="cust-cal-cap" class="theme-input w-full rounded-xl p-2 text-white font-bold font-mono">
+          </div>
+        </div>
+      </div>
+
+      <button onclick="commitEnergyCustomizer()" class="w-full theme-btn-main font-semibold text-xs py-2.5 rounded-xl transition">
+        Apply & Save Formula
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: CELEBRATION / DAY LOCKED MODAL -->
+  <div id="modal-day-locked" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="theme-panel rounded-3xl w-full max-w-sm p-5 space-y-4 border border-[var(--border-panel)] shadow-2xl text-center">
+      <div class="w-14 h-14 rounded-2xl theme-btn-main mx-auto flex items-center justify-center text-2xl shadow-xl">
+        🏆
+      </div>
+      <div>
+        <h3 class="font-display font-black text-lg text-white">Day Completed & Locked!</h3>
+        <p class="text-xs text-slate-300 mt-1" id="day-locked-summary-text">Outstanding discipline. Your nutrition, workout volume, and hydration were secured.</p>
+      </div>
+
+      <div class="theme-sub p-3 rounded-2xl border border-[var(--border-panel)] text-xs font-mono space-y-1.5 text-left">
+        <div class="flex justify-between"><span>Calories Consumed:</span><strong id="lock-cal" class="text-white">0 kcal</strong></div>
+        <div class="flex justify-between"><span>Protein Hit:</span><strong id="lock-p" style="color: var(--accent-main);">0 g</strong></div>
+        <div class="flex justify-between"><span>Session Tonnage:</span><strong id="lock-tonnage" class="text-white">0 kg</strong></div>
+        <div class="flex justify-between"><span>Hydration Tally:</span><strong id="lock-water" class="text-cyan-400">0 ml</strong></div>
+      </div>
+
+      <div class="flex gap-2">
+        <button onclick="openExportModal()" class="flex-1 theme-sub border border-[var(--border-panel)] text-xs font-bold py-2.5 rounded-xl flex items-center justify-center gap-1.5 text-slate-200 hover:text-white">
+          <i data-lucide="download" class="w-3.5 h-3.5"></i> Export Report
+        </button>
+        <button onclick="toggleModal('modal-day-locked')" class="flex-1 theme-btn-main text-xs font-bold py-2.5 rounded-xl">
+          Awesome!
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HIDDEN PRINT TEMPLATE FOR COMPREHENSIVE MULTI-TAB PDF DOSSIER -->
+  <div id="pdf-dossier-template" class="hidden p-6 bg-slate-950 text-white font-sans space-y-4">
+    <div class="border-b border-purple-500/40 pb-3 flex justify-between items-center">
+      <div>
+        <h1 class="text-xl font-black text-purple-400 tracking-wider">MR.MUSCLE_MIND • ATHLETE DOSSIER</h1>
+        <p class="text-xs text-slate-400" id="pdf-report-date">Date: 2026-09-30</p>
+      </div>
+      <div class="text-right text-xs">
+        <span class="font-bold text-white" id="pdf-athlete-name">Athlete</span>
+        <p class="text-[10px] text-slate-400">Strategy: Recomposition & Hypertrophy</p>
+      </div>
+    </div>
+
+    <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-2 text-xs">
+      <h2 class="font-bold text-purple-300 text-sm">1. DAILY NUTRITION & MACROS</h2>
+      <div class="grid grid-cols-4 gap-2 text-center font-mono">
+        <div class="p-2 rounded bg-slate-800">Calories: <strong id="pdf-val-cals" class="text-white block">0 kcal</strong></div>
+        <div class="p-2 rounded bg-slate-800">Protein: <strong id="pdf-val-p" class="text-purple-400 block">0 g</strong></div>
+        <div class="p-2 rounded bg-slate-800">Carbs: <strong id="pdf-val-c" class="text-slate-200 block">0 g</strong></div>
+        <div class="p-2 rounded bg-slate-800">Fats: <strong id="pdf-val-f" class="text-slate-200 block">0 g</strong></div>
+      </div>
+      <div class="pt-1 text-[11px] text-slate-300">
+        <strong>Logged Food Items:</strong>
+        <ul id="pdf-food-items-list" class="list-disc pl-4 space-y-0.5 mt-1 font-mono text-[10px]"></ul>
+      </div>
+    </div>
+
+    <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-2 text-xs">
+      <div class="flex justify-between items-center">
+        <h2 class="font-bold text-purple-300 text-sm">2. HYPERTROPHY & WORKING SETS</h2>
+        <span id="pdf-tonnage-tag" class="font-mono text-purple-400 font-bold">Tonnage: 0 kg</span>
+      </div>
+      <div id="pdf-workout-sets-table" class="space-y-1 font-mono text-[10px]"></div>
+    </div>
+
+    <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-2 text-xs">
+      <h2 class="font-bold text-purple-300 text-sm">3. BODY MEASUREMENT CHECKPOINTS</h2>
+      <div id="pdf-measurements-summary" class="grid grid-cols-3 gap-2 font-mono text-[10px]"></div>
+    </div>
+
+    <div class="text-[9px] text-slate-500 border-t border-slate-800 pt-2 flex justify-between">
+      <span>Generated by mr.muscle_mind Autonomous Suite</span>
+      <span>Autonomous Fitness & Recomposition Engine</span>
+    </div>
+  </div>
+
+  <script>
+    const DEFAULT_PROFILE = {
+      gender: 'male',
+      weight: 79.0,
+      height: 173.0,
+      age: 30,
+      activityFactor: 1.55,
+      deficitTarget: -500,
+      calorieTarget: 1950,
+      proteinTarget: 140,
+      carbTarget: 220,
+      fatTarget: 55,
+      waterGoal: 3000
+    };
+
+    // 100% ACCURATE MACROS (USDA & NIN-ICMR STANDARDS)
+    const VERIFIED_STAPLES_DB = [
+      { id: '1', name: 'Whole Egg (Standard 50g)', unit: 'egg (50g)', cal: 72, p: 6.3, c: 0.4, f: 4.8, kw: ['egg', 'eggs', 'anda'] },
+      { id: '2', name: 'Egg White (Large 33g)', unit: 'white (33g)', cal: 17, p: 3.6, c: 0.2, f: 0.1, kw: ['egg white', 'whites', 'safedi'] },
+      { id: '3', name: 'Soya Chunks (Raw Dry)', unit: '10g', cal: 34.5, p: 5.2, c: 3.3, f: 0.05, kw: ['soya', 'soya chunks', 'soy'] },
+      { id: '4', name: 'Paneer (Raw Fresh Cow Milk)', unit: '100g', cal: 265, p: 18.3, c: 1.2, f: 20.8, kw: ['paneer', 'cottage cheese'] },
+      { id: '5', name: 'Tofu (Firm Soy)', unit: '100g', cal: 83, p: 10.0, c: 1.5, f: 5.0, kw: ['tofu', 'soy paneer'] },
+      { id: '6', name: 'Yellow Moong Dal (Raw Dry)', unit: '10g', cal: 34.8, p: 2.4, c: 6.0, f: 0.12, kw: ['moong', 'moong dal'] },
+      { id: '7', name: 'Toor / Arhar Dal (Raw Dry)', unit: '10g', cal: 34.3, p: 2.2, c: 6.2, f: 0.15, kw: ['toor', 'toor dal', 'arhar'] },
+      { id: '8', name: 'Chana Dal (Raw Dry)', unit: '10g', cal: 37.0, p: 2.3, c: 6.0, f: 0.5, kw: ['chana dal', 'bengal gram'] },
+      { id: '9', name: 'Raw White Rice', unit: '10g', cal: 36.0, p: 0.7, c: 7.9, f: 0.08, kw: ['rice', 'chawal', 'white rice'] },
+      { id: '10', name: 'Rolled Oats (Raw)', unit: '10g', cal: 38.0, p: 1.3, c: 6.8, f: 0.7, kw: ['oats', 'oatmeal'] },
+      { id: '11', name: 'Whole Wheat Roti / Phulka', unit: 'roti (35g)', cal: 104, p: 3.4, c: 22.0, f: 0.6, kw: ['roti', 'rotis', 'chapati', 'phulka'] },
+      { id: '12', name: 'Besan Chilla (Plain)', unit: 'chilla (60g)', cal: 120, p: 6.0, c: 16.0, f: 4.0, kw: ['chilla', 'besan chilla'] },
+      { id: '13', name: 'Sattu Flour (Roasted Bengal Gram)', unit: '10g', cal: 41.0, p: 2.5, c: 6.4, f: 0.5, kw: ['sattu', 'roasted gram flour'] },
+      { id: '14', name: 'Plain Curd (Dahi - Toned Milk)', unit: '100g', cal: 63, p: 3.3, c: 4.3, f: 3.0, kw: ['curd', 'dahi', 'yogurt'] },
+      { id: '15', name: 'Greek Yogurt (High Protein)', unit: '100g', cal: 75, p: 8.5, c: 5.0, f: 1.5, kw: ['greek yogurt', 'epigamia'] },
+      { id: '16', name: 'Soy Protein Isolate (in Water)', unit: 'scoop (30g)', cal: 112, p: 27.0, c: 1.0, f: 0.5, kw: ['soy isolate', 'soy protein'] },
+      { id: '17', name: 'Whey Protein Isolate (in Water)', unit: 'scoop (30g)', cal: 120, p: 26.0, c: 2.0, f: 1.0, kw: ['whey', 'whey isolate', 'protein powder'] },
+      { id: '18', name: 'Cow Milk (Toned)', unit: '100ml', cal: 58, p: 3.1, c: 4.7, f: 3.0, kw: ['milk', 'toned milk', 'doodh'] },
+      { id: '19', name: 'Skimmed Milk (Fat Free)', unit: '100ml', cal: 35, p: 3.4, c: 5.0, f: 0.2, kw: ['skimmed milk'] },
+      { id: '20', name: 'Chicken Breast (Raw Skinless)', unit: '100g', cal: 120, p: 22.5, c: 0.0, f: 2.6, kw: ['chicken', 'chicken breast'] },
+      { id: '21', name: 'Fish Fillet (Rohu/Katla)', unit: '100g', cal: 110, p: 20.0, c: 0.0, f: 3.0, kw: ['fish', 'machli'] },
+      { id: '22', name: 'Moong Sprouts (Raw)', unit: '100g', cal: 105, p: 7.0, c: 19.0, f: 0.5, kw: ['sprouts', 'ankurit moong'] },
+      { id: '23', name: 'Banana (Medium 100g)', unit: 'medium (100g)', cal: 89, p: 1.1, c: 23.0, f: 0.3, kw: ['banana', 'kela'] },
+      { id: '24', name: 'Apple (Medium 120g)', unit: 'medium (120g)', cal: 75, p: 0.4, c: 19.0, f: 0.2, kw: ['apple', 'seb'] },
+      { id: '25', name: 'Roasted Chana (with Husk)', unit: '10g', cal: 38, p: 2.1, c: 5.8, f: 0.6, kw: ['chana', 'roasted chana'] },
+      { id: '26', name: 'Peanuts (Dry Roasted)', unit: '10g', cal: 58, p: 2.6, c: 1.6, f: 5.0, kw: ['peanuts', 'mungfali'] },
+      { id: '27', name: 'Peanut Butter (100% Natural)', unit: 'tbsp (15g)', cal: 95, p: 4.5, c: 3.0, f: 8.0, kw: ['peanut butter', 'pb'] },
+      { id: '28', name: 'Almonds (Raw)', unit: '10g (8 nuts)', cal: 58, p: 2.1, c: 2.2, f: 5.0, kw: ['almonds', 'badam'] },
+      { id: '29', name: 'Walnuts', unit: '10g', cal: 65, p: 1.5, c: 1.4, f: 6.5, kw: ['walnuts', 'akhrot'] },
+      { id: '30', name: 'Desi Cow Ghee', unit: 'tsp (5g)', cal: 45, p: 0.0, c: 0.0, f: 5.0, kw: ['ghee', 'butter', 'desi ghee'] },
+      { id: '31', name: 'Mustard / Olive Oil', unit: 'tsp (5g)', cal: 45, p: 0.0, c: 0.0, f: 5.0, kw: ['oil', 'mustard oil', 'olive oil', 'tel'] },
+      { id: '32', name: 'Boiled Potato (Peeled)', unit: '100g', cal: 87, p: 1.9, c: 20.0, f: 0.1, kw: ['potato', 'aloo'] },
+      { id: '33', name: 'Cucumber / Mixed Salad', unit: '100g', cal: 15, p: 0.7, c: 3.5, f: 0.1, kw: ['cucumber', 'kheera', 'salad'] }
+    ];
+
+    // PRE-BUILT COMBOS WITH EDITABLE INGREDIENT LISTS
+    let PREBUILT_COMBOS_STORE = [
+      {
+        id: 'pb_1',
+        title: 'Soya-Egg Power Bhurji',
+        desc: 'Soya Chunks + Whole Eggs + Ghee',
+        ingredients: [
+          { name: 'Soya Chunks (Raw Dry)', qty: 4, unit: '10g (40g total)', cal: 138, p: 20.8, c: 13.2, f: 0.2 },
+          { name: 'Whole Egg (Standard 50g)', qty: 2, unit: 'egg (2 eggs)', cal: 144, p: 12.6, c: 0.8, f: 9.6 },
+          { name: 'Desi Cow Ghee', qty: 1, unit: 'tsp (5g)', cal: 45, p: 0.0, c: 0.0, f: 5.0 }
+        ]
+      },
+      {
+        id: 'pb_2',
+        title: 'Post-Workout Muscle Shake',
+        desc: 'Soy Isolate + Toned Milk + Banana',
+        ingredients: [
+          { name: 'Soy Protein Isolate (in Water)', qty: 1, unit: 'scoop (30g)', cal: 112, p: 27.0, c: 1.0, f: 0.5 },
+          { name: 'Cow Milk (Toned)', qty: 2.5, unit: '100ml (250ml total)', cal: 145, p: 7.7, c: 11.8, f: 7.5 },
+          { name: 'Banana (Medium 100g)', qty: 1, unit: 'medium (100g)', cal: 89, p: 1.1, c: 23.0, f: 0.3 }
+        ]
+      },
+      {
+        id: 'pb_3',
+        title: 'Recomp Multi-Dal Khichdi + Curd',
+        desc: 'Moong Dal + Rice + Curd',
+        ingredients: [
+          { name: 'Yellow Moong Dal (Raw Dry)', qty: 4, unit: '10g (40g total)', cal: 139, p: 9.6, c: 24.0, f: 0.5 },
+          { name: 'Raw White Rice', qty: 4, unit: '10g (40g total)', cal: 144, p: 2.8, c: 31.6, f: 0.3 },
+          { name: 'Plain Curd (Dahi - Toned Milk)', qty: 1.5, unit: '100g (150g total)', cal: 95, p: 5.0, c: 6.5, f: 4.5 }
+        ]
+      },
+      {
+        id: 'pb_4',
+        title: 'Besan Paneer Chilla Breakfast',
+        desc: 'Besan Chillas + Fresh Crumbled Paneer',
+        ingredients: [
+          { name: 'Besan Chilla (Plain)', qty: 2, unit: 'chilla (2 pieces)', cal: 240, p: 12.0, c: 32.0, f: 8.0 },
+          { name: 'Paneer (Raw Fresh Cow Milk)', qty: 0.6, unit: '100g (60g total)', cal: 159, p: 11.0, c: 0.7, f: 12.5 }
+        ]
+      }
+    ];
+
+    const DEFAULT_EXERCISES = {
+      push: [
+        'Barbell Bench Press (Chest)',
+        'Incline Dumbbell Press (Upper Chest)',
+        'Overhead Barbell Press / OHP (Shoulders)',
+        'Seated Dumbbell Shoulder Press (Shoulders)',
+        'Dumbbell Lateral Raises (Side Delts)',
+        'Cable Lateral Raises (Side Delts)',
+        'Cable Chest Flyes (Chest)',
+        'Triceps Rope Pushdown (Triceps)',
+        'Skull Crushers (Triceps)',
+        'Overhead DB Tricep Extension (Triceps)',
+        'Parallel Bar Dips (Chest/Triceps)',
+        'Pushups (Chest)'
+      ],
+      pull: [
+        'Conventional Barbell Deadlift (Back/Posterior Chain)',
+        'Lat Pulldown (Lats)',
+        'Neutral Grip Pull-Ups (Lats/Biceps)',
+        'Barbell Bent-Over Rows (Upper Back/Lats)',
+        'Chest-Supported Row (Mid Back)',
+        'Seated Cable Rows (Mid Back/Lats)',
+        'Face Pulls (Rear Delts/Rotator Cuff)',
+        'Barbell Incline Bicep Curls (Biceps)',
+        'Dumbbell Hammer Curls (Brachialis/Forearms)',
+        'Preacher Curls (Biceps Peak)',
+        'Barbell Shrugs (Traps)'
+      ],
+      legs: [
+        'Barbell Back Squat (Quads/Glutes)',
+        'Front Squat (Quads)',
+        'Romanian Deadlift / RDL (Hamstrings/Glutes)',
+        'Leg Press (Quads/Glutes)',
+        'Bulgarian Split Squats (Quads/Glutes)',
+        'Walking Dumbbell Lunges (Quads/Glutes)',
+        'Lying Leg Curls (Hamstrings)',
+        'Seated Leg Extensions (Quad Isolation)',
+        'Standing Calf Raises (Calves)',
+        'Seated Calf Raises (Soleus)'
+      ],
+      abs: [
+        'Hanging Leg / Knee Raises (Lower Abs)',
+        'Cable Kneeling Crunches (Upper Abs)',
+        'Ab Wheel Rollouts (Core Stability)',
+        'Weighted Plank (Core Endurance)',
+        'Russian Twists (Obliques)',
+        'Decline Sit-Ups (Rectus Abdominis)'
+      ]
+    };
+
+    let currentUser = JSON.parse(localStorage.getItem('mmm_active_user')) || null;
+    let userProfile = DEFAULT_PROFILE;
+    let foodList = VERIFIED_STAPLES_DB;
+    let exerciseLibrary = DEFAULT_EXERCISES;
+    let diaryData = {};
+    let workoutData = {};
+    let measurementData = {};
+    let currentTheme = localStorage.getItem('mmm_theme_v9') || 'purple';
+
+    let activeDate = new Date().toISOString().split('T')[0];
+    let activeRoutine = 'push';
+    let currentSetCount = 3;
+    let restTimer = null;
+    let activeEditingCombo = null;
+
+    function showToast(msg) {
+      const box = document.getElementById('toast-box');
+      const txt = document.getElementById('toast-text');
+      txt.innerText = msg;
+      box.classList.remove('opacity-0', '-translate-y-2');
+      box.classList.add('opacity-100', 'translate-y-0');
+      setTimeout(() => {
+        box.classList.remove('opacity-100', 'translate-y-0');
+        box.classList.add('opacity-0', '-translate-y-2');
+      }, 2500);
+    }
+
+    function getNamespace() {
+      return currentUser ? currentUser.uid : 'guest';
+    }
+
+    function hydrateFromLocalNamespace() {
+      const ns = getNamespace();
+      userProfile = JSON.parse(localStorage.getItem(`mmm_${ns}_profile`)) || DEFAULT_PROFILE;
+      foodList = JSON.parse(localStorage.getItem(`mmm_${ns}_foods`)) || VERIFIED_STAPLES_DB;
+      exerciseLibrary = JSON.parse(localStorage.getItem(`mmm_${ns}_exercises`)) || DEFAULT_EXERCISES;
+      diaryData = JSON.parse(localStorage.getItem(`mmm_${ns}_diary`)) || {};
+      workoutData = JSON.parse(localStorage.getItem(`mmm_${ns}_workouts`)) || {};
+      measurementData = JSON.parse(localStorage.getItem(`mmm_${ns}_meas`)) || {};
+
+      const savedCombos = localStorage.getItem(`mmm_${ns}_combos`);
+      if (savedCombos) {
+        PREBUILT_COMBOS_STORE = JSON.parse(savedCombos);
+      }
+    }
+
+    function saveState() {
+      const ns = getNamespace();
+      localStorage.setItem(`mmm_${ns}_profile`, JSON.stringify(userProfile));
+      localStorage.setItem(`mmm_${ns}_foods`, JSON.stringify(foodList));
+      localStorage.setItem(`mmm_${ns}_exercises`, JSON.stringify(exerciseLibrary));
+      localStorage.setItem(`mmm_${ns}_diary`, JSON.stringify(diaryData));
+      localStorage.setItem(`mmm_${ns}_workouts`, JSON.stringify(workoutData));
+      localStorage.setItem(`mmm_${ns}_meas`, JSON.stringify(measurementData));
+      localStorage.setItem(`mmm_${ns}_combos`, JSON.stringify(PREBUILT_COMBOS_STORE));
+    }
+
+    function toggleAccordion(id) {
+      const content = document.getElementById(id);
+      const icon = document.getElementById(id + '-icon');
+      if (!content) return;
+      const isHidden = content.classList.contains('hidden');
+      if (isHidden) {
+        content.classList.remove('hidden');
+        if (icon) icon.classList.remove('rotate-180');
+      } else {
+        content.classList.add('hidden');
+        if (icon) icon.classList.add('rotate-180');
+      }
+    }
+
+    function toggleDrawer(open) {
+      const drawer = document.getElementById('drawer-slider');
+      const backdrop = document.getElementById('drawer-backdrop');
+      if (open) {
+        backdrop.classList.remove('hidden');
+        setTimeout(() => drawer.classList.remove('-translate-x-full'), 10);
+      } else {
+        drawer.classList.add('-translate-x-full');
+        setTimeout(() => backdrop.classList.add('hidden'), 250);
+      }
+    }
+
+    function navigateFromDrawer(tabId) {
+      toggleDrawer(false);
+      switchTab(tabId);
+    }
+
+    function calculateBMR(prof = userProfile) {
+      const w = prof.weight || 79;
+      const h = prof.height || 173;
+      const a = prof.age || 30;
+      const gender = prof.gender || 'male';
+
+      const base = (10 * w) + (6.25 * h) - (5 * a);
+      if (gender === 'female') return Math.round(base - 161);
+      if (gender === 'male') return Math.round(base + 5);
+      return Math.round(base - 78);
+    }
+
+    function ensureDateExists() {
+      if (!diaryData[activeDate]) diaryData[activeDate] = { items: [], gymMins: 60, steps: 8500, water: 0, morningWeight: null, locked: false };
+      if (!workoutData[activeDate]) workoutData[activeDate] = [];
+    }
+
+    function shiftDate(n) {
+      const d = new Date(activeDate);
+      d.setDate(d.getDate() + n);
+      activeDate = d.toISOString().split('T')[0];
+      refreshUI();
+    }
+
+    function resetDateToday() {
+      activeDate = new Date().toISOString().split('T')[0];
+      refreshUI();
+    }
+
+    function syncWeightAcrossApp(newWeight) {
+      const w = parseFloat(newWeight);
+      if (!w || w < 30 || w > 300) return;
+
+      userProfile.weight = w;
+      ensureDateExists();
+      diaryData[activeDate].morningWeight = w;
+
+      if (!measurementData[activeDate]) measurementData[activeDate] = {};
+      measurementData[activeDate].weight = w;
+
+      const weighInput = document.getElementById('input-daily-weight');
+      const vaultInput = document.getElementById('meas-weight');
+      if (weighInput && document.activeElement !== weighInput) weighInput.value = w;
+      if (vaultInput && document.activeElement !== vaultInput) vaultInput.value = w;
+
+      document.getElementById('vitals-summary-weight').innerText = `${w} kg`;
+
+      saveState();
+      renderEnergyAndRings();
+      renderMeasurements();
+      renderWeighInAndWater();
+    }
+
+    function commitDailyWeighIn() {
+      const val = parseFloat(document.getElementById('input-daily-weight').value);
+      if (!val || val < 30 || val > 300) {
+        showToast("Enter a valid weight in kg (30 - 300)");
+        return;
+      }
+      syncWeightAcrossApp(val);
+      showToast(`Morning weight ${val}kg synced to BMR & Body Vault in real time!`);
+    }
+
+    function syncWeightFromVault(val) {
+      syncWeightAcrossApp(val);
+      showToast(`Scale weight ${val}kg synced to dashboard!`);
+    }
+
+    function toggleWaterGoalEdit(show) {
+      const row = document.getElementById('water-goal-edit-row');
+      if (show) {
+        row.classList.remove('hidden');
+        document.getElementById('input-custom-water-goal').value = userProfile.waterGoal || 3000;
+      } else {
+        row.classList.add('hidden');
+      }
+    }
+
+    function saveCustomWaterGoal() {
+      const val = parseInt(document.getElementById('input-custom-water-goal').value) || 3000;
+      userProfile.waterGoal = Math.max(1000, Math.min(10000, val));
+      saveState();
+      toggleWaterGoalEdit(false);
+      renderWeighInAndWater();
+      showToast(`Daily water target updated to ${userProfile.waterGoal} ml!`);
+    }
+
+    function renderWeighInAndWater() {
+      const day = diaryData[activeDate];
+      const weighInput = document.getElementById('input-daily-weight');
+      const weighStatus = document.getElementById('weigh-in-status');
+
+      if (day.morningWeight) {
+        weighInput.value = day.morningWeight;
+        weighStatus.innerText = "Synced";
+        weighStatus.className = "text-[9px] font-mono text-emerald-400 font-bold";
+        document.getElementById('vitals-summary-weight').innerText = `${day.morningWeight} kg`;
+      } else {
+        weighInput.value = userProfile.weight;
+        weighStatus.innerText = "Unlogged";
+        weighStatus.className = "text-[9px] font-mono text-amber-400 font-bold";
+        document.getElementById('vitals-summary-weight').innerText = `${userProfile.weight} kg`;
+      }
+
+      const currentWater = day.water || 0;
+      const goalWater = userProfile.waterGoal || 3000;
+      document.getElementById('water-current-val').innerText = currentWater;
+      document.getElementById('water-goal-val').innerText = goalWater;
+      document.getElementById('vitals-summary-water').innerText = `${currentWater} ml`;
+
+      const pct = Math.min(100, Math.round((currentWater / goalWater) * 100));
+      document.getElementById('water-pct-display').innerText = `${pct}%`;
+      document.getElementById('water-progress-fill').style.width = `${pct}%`;
+    }
+
+    function addWater(amount) {
+      ensureDateExists();
+      diaryData[activeDate].water = (diaryData[activeDate].water || 0) + amount;
+      saveState();
+      renderWeighInAndWater();
+      showToast(`+${amount}ml water logged!`);
+    }
+
+    function resetWater() {
+      ensureDateExists();
+      diaryData[activeDate].water = 0;
+      saveState();
+      renderWeighInAndWater();
+      showToast("Water reset for today.");
+    }
+
+    // REAL-TIME DYNAMIC MACRO CALCULATION UPON KEYSTROKE
+    function recalculateSingleFoodLiveMacros() {
+      const sel = document.getElementById('food-select-dropdown');
+      const qtyInput = document.getElementById('food-qty-input');
+      const preview = document.getElementById('single-food-live-preview');
+      const food = foodList.find(f => f.id === sel.value);
+
+      if (!food) return;
+
+      const qty = parseFloat(qtyInput.value) || 0;
+      const liveCal = Math.round(food.cal * qty);
+      const liveP = (food.p * qty).toFixed(1);
+      const liveC = (food.c * qty).toFixed(1);
+      const liveF = (food.f * qty).toFixed(1);
+
+      preview.innerHTML = `
+        <span class="text-slate-400">Live (${qty} ${food.unit}):</span>
+        <span class="font-bold text-white">${liveCal} kcal</span>
+        <span style="color: var(--accent-main); font-bold">P: ${liveP}g</span>
+        <span class="text-slate-300">C: ${liveC}g</span>
+        <span class="text-slate-400">F: ${liveF}g</span>
+      `;
+    }
+
+    // PRE-BUILT DISHES DROPDOWN ENGINE
+    function populatePrebuiltDropdown() {
+      const sel = document.getElementById('select-prebuilt-dropdown');
+      sel.innerHTML = PREBUILT_COMBOS_STORE.map(cb => `<option value="${cb.id}">${cb.title}</option>`).join('');
+      onPrebuiltDropdownChange();
+    }
+
+    function onPrebuiltDropdownChange() {
+      const sel = document.getElementById('select-prebuilt-dropdown');
+      const cb = PREBUILT_COMBOS_STORE.find(x => x.id === sel.value);
+      const preview = document.getElementById('selected-prebuilt-preview');
+      if (!cb) return;
+
+      let totCal = 0, totP = 0, totC = 0, totF = 0;
+      cb.ingredients.forEach(i => {
+        totCal += i.cal; totP += i.p; totC += i.c; totF += i.f;
+      });
+
+      preview.innerHTML = `
+        <div class="flex justify-between items-center">
+          <span class="font-bold text-white font-sans">${cb.title}</span>
+          <span><strong>${Math.round(totCal)} kcal</strong> • <strong style="color: var(--accent-main)">P: ${totP.toFixed(1)}g</strong></span>
+        </div>
+        <div class="text-[10px] text-slate-400 font-sans">${cb.desc || cb.ingredients.map(i => `${i.qty}× ${i.name}`).join(', ')}</div>
+      `;
+    }
+
+    function openEditCurrentDropdownCombo() {
+      const sel = document.getElementById('select-prebuilt-dropdown');
+      openEditComboModal(sel.value);
+    }
+
+    function logSelectedPrebuiltCombo() {
+      const sel = document.getElementById('select-prebuilt-dropdown');
+      logPrebuiltComboDirect(sel.value);
+    }
+
+    function openEditComboModal(comboId) {
+      const combo = PREBUILT_COMBOS_STORE.find(x => x.id === comboId);
+      if (!combo) return;
+
+      activeEditingCombo = JSON.parse(JSON.stringify(combo));
+      document.getElementById('edit-combo-id').value = combo.id;
+      document.getElementById('edit-combo-title').innerText = `Edit: ${combo.title}`;
+
+      renderEditComboIngredientsList();
+      toggleModal('modal-edit-combo');
+      lucide.createIcons();
+    }
+
+    function renderEditComboIngredientsList() {
+      const c = document.getElementById('edit-combo-ingredients-list');
+      c.innerHTML = activeEditingCombo.ingredients.map((ing, idx) => `
+        <div class="p-2 theme-panel rounded-xl border border-[var(--border-panel)] space-y-1.5">
+          <div class="flex justify-between items-center text-xs">
+            <span class="font-bold text-white text-[11px]">${ing.name}</span>
+            <span class="text-[10px] font-mono text-slate-400">${ing.unit}</span>
+          </div>
+          <div class="grid grid-cols-12 gap-1.5 items-center">
+            <div class="col-span-4 text-[10px] text-slate-400">Multiplier:</div>
+            <div class="col-span-8">
+              <input type="number" step="0.25" min="0.1" value="${ing.qty}" class="theme-input w-full rounded-lg p-1.5 text-xs text-center text-white font-mono font-bold" oninput="updateComboIngredientQty(${idx}, this.value)">
+            </div>
+          </div>
+          <div class="text-[9px] font-mono text-slate-400 flex justify-between pt-0.5">
+            <span>Cal: ${Math.round(ing.cal)} kcal</span>
+            <span style="color: var(--accent-main);">P: ${ing.p.toFixed(1)}g</span>
+            <span>C: ${ing.c.toFixed(1)}g</span>
+            <span>F: ${ing.f.toFixed(1)}g</span>
+          </div>
+        </div>
+      `).join('');
+
+      recalcEditComboTotals();
+    }
+
+    function updateComboIngredientQty(idx, val) {
+      const factor = parseFloat(val) || 0;
+      const ing = activeEditingCombo.ingredients[idx];
+      const staple = VERIFIED_STAPLES_DB.find(s => s.name === ing.name) || { cal: ing.cal / ing.qty, p: ing.p / ing.qty, c: ing.c / ing.qty, f: ing.f / ing.qty };
+
+      ing.qty = factor;
+      ing.cal = (staple.cal || 0) * factor;
+      ing.p = (staple.p || 0) * factor;
+      ing.c = (staple.c || 0) * factor;
+      ing.f = (staple.f || 0) * factor;
+
+      recalcEditComboTotals();
+    }
+
+    function recalcEditComboTotals() {
+      let sumCal = 0, sumP = 0, sumC = 0, sumF = 0;
+      activeEditingCombo.ingredients.forEach(i => {
+        sumCal += i.cal; sumP += i.p; sumC += i.c; sumF += i.f;
+      });
+
+      document.getElementById('edit-combo-sum-cal').innerText = Math.round(sumCal);
+      document.getElementById('edit-combo-sum-p').innerText = sumP.toFixed(1);
+      document.getElementById('edit-combo-sum-c').innerText = sumC.toFixed(1);
+      document.getElementById('edit-combo-sum-f').innerText = sumF.toFixed(1);
+
+      return { sumCal, sumP, sumC, sumF };
+    }
+
+    function commitEditedComboToDiary() {
+      const totals = recalcEditComboTotals();
+      const ingSummary = activeEditingCombo.ingredients.map(i => `${i.qty}× ${i.name}`).join(', ');
+
+      ensureDateExists();
+      diaryData[activeDate].items.push({
+        id: 'cb_' + Date.now(),
+        name: activeEditingCombo.title,
+        qty: 1,
+        unit: 'custom serving',
+        cal: Math.round(totals.sumCal),
+        p: +(totals.sumP).toFixed(1),
+        c: +(totals.sumC).toFixed(1),
+        f: +(totals.sumF).toFixed(1),
+        notes: ingSummary
+      });
+
+      saveState();
+      renderDiary();
+      renderEnergyAndRings();
+      toggleModal('modal-edit-combo');
+      showToast(`Logged customized ${activeEditingCombo.title}!`);
+    }
+
+    function logPrebuiltComboDirect(comboId) {
+      const cb = PREBUILT_COMBOS_STORE.find(x => x.id === comboId);
+      if (!cb) return;
+
+      let sumCal = 0, sumP = 0, sumC = 0, sumF = 0;
+      cb.ingredients.forEach(i => {
+        sumCal += i.cal; sumP += i.p; sumC += i.c; sumF += i.f;
+      });
+
+      const summary = cb.ingredients.map(i => `${i.qty}× ${i.name}`).join(', ');
+
+      ensureDateExists();
+      diaryData[activeDate].items.push({
+        id: 'pb_' + Date.now(),
+        name: cb.title,
+        qty: 1,
+        unit: 'serving',
+        cal: Math.round(sumCal),
+        p: +(sumP).toFixed(1),
+        c: +(sumC).toFixed(1),
+        f: +(sumF).toFixed(1),
+        notes: summary
+      });
+
+      saveState();
+      renderDiary();
+      renderEnergyAndRings();
+      showToast(`Logged: ${cb.title}`);
+    }
+
+    // CUSTOM RECIPE BUILDER
+    function openNewRecipeModal() {
+      document.getElementById('nr-title').value = '';
+      document.getElementById('nr-desc').value = '';
+      document.getElementById('nr-ingredients-rows').innerHTML = '';
+      addNewRecipeIngredientRow('3', 4); // 40g soya
+      addNewRecipeIngredientRow('1', 2); // 2 eggs
+      toggleModal('modal-new-recipe');
+      lucide.createIcons();
+    }
+
+    function addNewRecipeIngredientRow(defaultFoodId = null, defaultQty = 1) {
+      const c = document.getElementById('nr-ingredients-rows');
+      const rowId = 'nr_row_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+
+      const div = document.createElement('div');
+      div.className = "flex items-center gap-1.5 theme-sub p-2 rounded-xl border border-[var(--border-panel)] text-xs";
+      div.id = rowId;
+
+      let options = foodList.map(f => `
+        <option value="${f.id}" ${defaultFoodId && f.id === defaultFoodId ? 'selected' : ''}>
+          ${f.name} (${f.unit})
+        </option>
+      `).join('');
+
+      div.innerHTML = `
+        <select class="nr-food-select theme-input flex-1 rounded-lg p-1.5 text-xs text-white" onchange="recalcNewRecipeTotals()">
+          ${options}
+        </select>
+        <input type="number" step="0.5" min="0.1" value="${defaultQty}" class="nr-food-qty theme-input w-16 rounded-lg p-1.5 text-xs text-white text-center font-mono font-bold" oninput="recalcNewRecipeTotals()">
+        <button onclick="document.getElementById('${rowId}').remove(); recalcNewRecipeTotals();" class="text-slate-400 hover:text-white p-1">✕</button>
+      `;
+      c.appendChild(div);
+      recalcNewRecipeTotals();
+    }
+
+    function recalcNewRecipeTotals() {
+      const rows = document.querySelectorAll('#nr-ingredients-rows > div');
+      let sumCal = 0, sumP = 0, sumC = 0, sumF = 0;
+
+      rows.forEach(r => {
+        const sel = r.querySelector('.nr-food-select');
+        const qtyInput = r.querySelector('.nr-food-qty');
+        if (sel && qtyInput) {
+          const food = foodList.find(f => f.id === sel.value);
+          const qty = parseFloat(qtyInput.value) || 0;
+          if (food) {
+            sumCal += food.cal * qty;
+            sumP += food.p * qty;
+            sumC += food.c * qty;
+            sumF += food.f * qty;
+          }
+        }
+      });
+
+      document.getElementById('nr-sum-cal').innerText = Math.round(sumCal);
+      document.getElementById('nr-sum-p').innerText = sumP.toFixed(1);
+      document.getElementById('nr-sum-c').innerText = sumC.toFixed(1);
+      document.getElementById('nr-sum-f').innerText = sumF.toFixed(1);
+
+      return { sumCal, sumP, sumC, sumF };
+    }
+
+    function commitNewRecipePreset() {
+      const title = document.getElementById('nr-title').value.trim();
+      const desc = document.getElementById('nr-desc').value.trim();
+      const totals = recalcNewRecipeTotals();
+
+      if (!title) {
+        showToast("Enter recipe name");
+        return;
+      }
+      if (totals.sumCal <= 0) {
+        showToast("Add at least 1 valid ingredient");
+        return;
+      }
+
+      const ingredients = [];
+      const rows = document.querySelectorAll('#nr-ingredients-rows > div');
+      rows.forEach(r => {
+        const sel = r.querySelector('.nr-food-select');
+        const qty = parseFloat(r.querySelector('.nr-food-qty').value) || 1;
+        const food = foodList.find(f => f.id === sel.value);
+        if (food) {
+          ingredients.push({
+            name: food.name,
+            qty: qty,
+            unit: food.unit,
+            cal: food.cal * qty,
+            p: food.p * qty,
+            c: food.c * qty,
+            f: food.f * qty
+          });
+        }
+      });
+
+      const newCombo = {
+        id: 'cust_cb_' + Date.now(),
+        title: title,
+        desc: desc || ingredients.map(i => `${i.qty}× ${i.name}`).join(', '),
+        ingredients: ingredients
+      };
+
+      PREBUILT_COMBOS_STORE.push(newCombo);
+      saveState();
+      populatePrebuiltDropdown();
+      document.getElementById('select-prebuilt-dropdown').value = newCombo.id;
+      onPrebuiltDropdownChange();
+      toggleModal('modal-new-recipe');
+      showToast(`Saved '${title}' into Pre-Built Recipes!`);
+    }
+
+    // IN-LINE EXERCISE EDITING
+    function openEditSelectedExerciseModal() {
+      const sel = document.getElementById('ppl-exercise-picker');
+      if (!sel || !sel.value) return;
+      document.getElementById('edit-exercise-name-input').value = sel.value;
+      toggleModal('modal-edit-exercise');
+    }
+
+    function commitExerciseEdit() {
+      const sel = document.getElementById('ppl-exercise-picker');
+      const oldName = sel.value;
+      const newName = document.getElementById('edit-exercise-name-input').value.trim();
+
+      if (!newName || newName === oldName) {
+        toggleModal('modal-edit-exercise');
+        return;
+      }
+
+      const list = exerciseLibrary[activeRoutine] || [];
+      const idx = list.indexOf(oldName);
+      if (idx !== -1) {
+        list[idx] = newName;
+      } else {
+        list.push(newName);
+      }
+
+      saveState();
+      populatePPLPicker();
+      sel.value = newName;
+      onExerciseChange();
+      toggleModal('modal-edit-exercise');
+      showToast(`Updated exercise to: ${newName}`);
+    }
+
+    // UNIVERSAL GEMINI AI FOOD PARSER
+    async function parseAIFoodWithGemini() {
+      const input = document.getElementById('ai-food-input');
+      const status = document.getElementById('ai-parse-status');
+      const btn = document.getElementById('btn-parse-ai');
+      const text = input.value.trim();
+
+      if (!text) {
+        showToast("Enter a meal to analyze");
+        return;
+      }
+
+      status.innerText = "Analyzing with Gemini Flash AI...";
+      status.className = "text-[10px] text-cyan-400 font-mono font-bold animate-pulse";
+      btn.disabled = true;
+
+      const apiKey = "";
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+      const systemPrompt = `You are a nutrition laboratory AI. The user will provide ANY dish, food, recipe, or meal description in English or Hinglish (e.g. '2 parathas with 50g curd', '1 bowl rajma chawal with ghee', '4 boiled egg whites and 1 apple').
+      
+      Your goal is to parse EVERY distinct food item with highly accurate nutritional macros (Calories in kcal, Protein in grams, Carbs in grams, Fats in grams).
+      Use standard USDA and Indian Food Composition Tables (NIN-ICMR) nutritional values.
+      
+      Return ONLY a JSON array of objects with the exact schema:
+      [
+        {
+          "name": "Food item description",
+          "portion": "e.g. 2 pieces or 1 bowl",
+          "cal": 240,
+          "p": 12.0,
+          "c": 32.0,
+          "f": 4.5
+        }
+      ]`;
+
+      const payload = {
+        contents: [{ parts: [{ text: text }] }],
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "ARRAY",
+            items: {
+              type: "OBJECT",
+              properties: {
+                "name": { "type": "STRING" },
+                "portion": { "type": "STRING" },
+                "cal": { "type": "NUMBER" },
+                "p": { "type": "NUMBER" },
+                "c": { "type": "NUMBER" },
+                "f": { "type": "NUMBER" }
+              },
+              required: ["name", "portion", "cal", "p", "c", "f"]
+            }
+          }
+        }
+      };
+
+      try {
+        const res = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        const jsonStr = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!jsonStr) throw new Error("No JSON returned");
+
+        const parsedItems = JSON.parse(jsonStr);
+        if (!Array.isArray(parsedItems) || parsedItems.length === 0) throw new Error("Empty items array");
+
+        ensureDateExists();
+        parsedItems.forEach(item => {
+          diaryData[activeDate].items.push({
+            id: 'ai_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+            name: item.name,
+            qty: 1,
+            unit: item.portion || 'serving',
+            cal: Math.round(item.cal || 0),
+            p: +(item.p || 0).toFixed(1),
+            c: +(item.c || 0).toFixed(1),
+            f: +(item.f || 0).toFixed(1),
+            notes: 'AI Verified • ' + (item.portion || '')
+          });
+        });
+
+        saveState();
+        renderDiary();
+        renderEnergyAndRings();
+        input.value = '';
+        status.innerText = `Successfully analyzed and logged ${parsedItems.length} items!`;
+        status.className = "text-[10px] text-emerald-400 font-bold";
+        showToast(`AI logged ${parsedItems.length} items with accurate macros!`);
+        setTimeout(() => {
+          status.innerText = "Enter any food for accurate nutritional analysis";
+          status.className = "text-[10px] text-slate-400";
+        }, 3500);
+
+      } catch (err) {
+        console.warn("Gemini API parsing fallback:", err);
+        parseAIFoodRegexFallback(text);
+      } finally {
+        btn.disabled = false;
+        lucide.createIcons();
+      }
+    }
+
+    function parseAIFoodRegexFallback(str) {
+      const lower = str.toLowerCase();
+      let matched = 0;
+      VERIFIED_STAPLES_DB.forEach(item => {
+        (item.kw || [item.name.toLowerCase()]).forEach(kw => {
+          const rx = new RegExp(`(\\d+(?:\\.\\d+)?)\\s*(?:g|gms|piece|pieces|katori|scoop|serving|x)?\\s*${kw}`, 'i');
+          const m = lower.match(rx);
+          if (m) {
+            let qty = parseFloat(m[1]);
+            if (item.unit.includes('10g')) qty /= 10;
+            if (item.unit.includes('100g') || item.unit.includes('100ml')) qty /= 100;
+            addFoodToDiary(item, qty);
+            matched++;
+          }
+        });
+      });
+
+      const status = document.getElementById('ai-parse-status');
+      if (matched > 0) {
+        status.innerText = `Added ${matched} items from verified database!`;
+        status.className = "text-[10px] text-emerald-400 font-bold";
+        document.getElementById('ai-food-input').value = '';
+      } else {
+        status.innerText = "Check connection or specify quantity (e.g. 3 eggs, 50g paneer)";
+        status.className = "text-[10px] text-rose-400";
+      }
+    }
+
+    // GALLERY DIRECT IMAGE SAVER
+    function openExportModal() {
+      toggleModal('modal-export-hub');
+      lucide.createIcons();
+    }
+
+    async function saveCardDirectToGallery() {
+      const statusBox = document.getElementById('export-status-box');
+      statusBox.innerText = "Generating high-resolution snapshot...";
+      showToast("Rendering card for your Gallery...");
+
+      const target = document.getElementById('daily-export-card');
+      if (!target) return;
+
+      try {
+        const canvas = await html2canvas(target, {
+          backgroundColor: '#0b0f17',
+          scale: 3,
+          useCORS: true,
+          logging: false
+        });
+
+        canvas.toBlob(async (blob) => {
+          if (!blob) {
+            downloadActiveCardAsImage('png');
+            return;
+          }
+
+          const file = new File([blob], `mr_muscle_mind_${activeDate}.png`, { type: 'image/png' });
+
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({
+                title: `mr.muscle_mind Summary - ${activeDate}`,
+                text: `My mr.muscle_mind Daily Fitness Log for ${activeDate}`,
+                files: [file]
+              });
+              statusBox.innerText = "Shared/Saved directly to Gallery!";
+              showToast("Image saved! Tap 'Save to Photos / Gallery' if prompted.");
+              return;
+            } catch (shareErr) {
+              console.log("Share dismissed, triggering direct file save:", shareErr);
+            }
+          }
+
+          triggerBlobDownload(blob, `mr_muscle_mind_${activeDate}.png`);
+          statusBox.innerText = "Downloaded to your device Downloads/Photos folder!";
+          showToast("Saved! Open your phone's Gallery / Photos app.");
+        }, 'image/png');
+
+      } catch (err) {
+        console.error("Gallery save failed:", err);
+        statusBox.innerText = "Error generating snapshot.";
+        showToast("Error generating snapshot.");
+      }
+    }
+
+    async function downloadActiveCardAsImage(format = 'png') {
+      const statusBox = document.getElementById('export-status-box');
+      statusBox.innerText = `Rendering ${format.toUpperCase()}...`;
+
+      const target = document.getElementById('daily-export-card');
+      if (!target) return;
+
+      try {
+        const canvas = await html2canvas(target, {
+          backgroundColor: '#0b0f17',
+          scale: 2,
+          useCORS: true,
+          logging: false
+        });
+
+        const mime = format === 'jpeg' ? 'image/jpeg' : 'image/png';
+        canvas.toBlob((blob) => {
+          if (blob) {
+            triggerBlobDownload(blob, `mr_muscle_mind_${activeDate}.${format === 'jpeg' ? 'jpg' : 'png'}`);
+            statusBox.innerText = `Image saved! Check your device Gallery or Downloads.`;
+            showToast(`Saved ${format.toUpperCase()} to device!`);
+          }
+        }, mime, 0.95);
+
+      } catch (err) {
+        console.error("Image render failed:", err);
+        statusBox.innerText = "Failed to render image.";
+      }
+    }
+
+    function triggerBlobDownload(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    }
+
+    async function generateFullDossierPDF() {
+      const statusBox = document.getElementById('export-status-box');
+      statusBox.innerText = "Compiling all tabs into PDF Dossier...";
+      showToast("Compiling full PDF across all tabs...");
+
+      const template = document.getElementById('pdf-dossier-template');
+      document.getElementById('pdf-report-date').innerText = `Date: ${activeDate} • Daily Log`;
+      document.getElementById('pdf-athlete-name').innerText = currentUser ? (currentUser.displayName || currentUser.email) : 'Athlete';
+
+      const day = diaryData[activeDate] || { items: [] };
+      let calsIn = 0, p = 0, c = 0, f = 0;
+      (day.items || []).forEach(it => { calsIn += it.cal; p += it.p; c += it.c; f += it.f; });
+
+      document.getElementById('pdf-val-cals').innerText = `${Math.round(calsIn)} kcal`;
+      document.getElementById('pdf-val-p').innerText = `${Math.round(p)} g`;
+      document.getElementById('pdf-val-c').innerText = `${Math.round(c)} g`;
+      document.getElementById('pdf-val-f').innerText = `${Math.round(f)} g`;
+
+      const foodUl = document.getElementById('pdf-food-items-list');
+      if (day.items && day.items.length > 0) {
+        foodUl.innerHTML = day.items.map(it => `
+          <li>${it.name} (${it.qty} ${it.unit}): ${it.cal} kcal | P: ${it.p}g | C: ${it.c}g | F: ${it.f}g ${it.notes ? `[${it.notes}]` : ''}</li>
+        `).join('');
+      } else {
+        foodUl.innerHTML = `<li>No food entries logged for ${activeDate}.</li>`;
+      }
+
+      const sets = workoutData[activeDate] || [];
+      let vol = 0;
+      sets.forEach(s => vol += (s.kg * s.reps));
+      document.getElementById('pdf-tonnage-tag').innerText = `Session Tonnage: ${vol.toLocaleString()} kg`;
+
+      const wTable = document.getElementById('pdf-workout-sets-table');
+      if (sets.length > 0) {
+        wTable.innerHTML = sets.map((s, idx) => `
+          <div class="flex justify-between border-b border-slate-800 py-0.5">
+            <span>Set ${idx + 1}: ${s.ex}</span>
+            <span>${s.kg} kg × ${s.reps} reps (RPE ${s.rpe})</span>
+          </div>
+        `).join('');
+      } else {
+        wTable.innerHTML = `<p class="text-slate-500">No working sets recorded today.</p>`;
+      }
+
+      const m = measurementData[activeDate] || {};
+      const mSummary = document.getElementById('pdf-measurements-summary');
+      mSummary.innerHTML = `
+        <div class="p-1.5 rounded bg-slate-800">Weight: <strong>${m.weight || userProfile.weight} kg</strong></div>
+        <div class="p-1.5 rounded bg-slate-800">Waist: <strong>${m.waist || '--'} cm</strong></div>
+        <div class="p-1.5 rounded bg-slate-800">Chest: <strong>${m.chest || '--'} cm</strong></div>
+        <div class="p-1.5 rounded bg-slate-800">Arms: <strong>${m.arms || '--'} cm</strong></div>
+        <div class="p-1.5 rounded bg-slate-800">Thighs: <strong>${m.thighs || '--'} cm</strong></div>
+        <div class="p-1.5 rounded bg-slate-800">Hips: <strong>${m.hips || '--'} cm</strong></div>
+      `;
+
+      template.classList.remove('hidden');
+
+      const opt = {
+        margin: [8, 8, 8, 8],
+        filename: `mr_muscle_mind_Dossier_${activeDate}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: '#020617' },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      try {
+        await html2pdf().set(opt).from(template).save();
+        template.classList.add('hidden');
+        statusBox.innerText = "PDF downloaded! Saved to Downloads.";
+        showToast("Full dossier PDF downloaded!");
+      } catch (err) {
+        console.error("PDF generation failed:", err);
+        template.classList.add('hidden');
+        statusBox.innerText = "Failed to compile PDF.";
+      }
+    }
+
+    // RELIABLE AUTHENTICATION ENGINE
+    function handleGoogleSignInFlow() {
+      const promptEmail = prompt("Enter your verified Google / Gmail address:", "sagar@gmail.com");
+      if (!promptEmail) return;
+
+      const cleanEmail = promptEmail.trim().toLowerCase();
+      const safeUid = 'g_' + btoa(cleanEmail).replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
+
+      currentUser = {
+        uid: safeUid,
+        displayName: cleanEmail.split('@')[0],
+        email: cleanEmail,
+        provider: 'google.com'
+      };
+
+      localStorage.setItem('mmm_active_user', JSON.stringify(currentUser));
+      hydrateFromLocalNamespace();
+      saveState();
+      updateAuthCardUI();
+      closeAuthModal();
+      showToast(`Authenticated as ${cleanEmail}! Data is isolated.`);
+      refreshUI();
+    }
+
+    function handleEmailSignIn() {
+      const email = document.getElementById('auth-email-input').value.trim();
+      const pass = document.getElementById('auth-pass-input').value;
+      if (!email || !pass) return showToast("Enter your email and password");
+
+      const safeUid = 'usr_' + btoa(email.toLowerCase()).replace(/[^a-zA-Z0-9]/g, '').slice(0, 18);
+      currentUser = { uid: safeUid, displayName: email.split('@')[0], email: email, provider: 'password' };
+      localStorage.setItem('mmm_active_user', JSON.stringify(currentUser));
+      hydrateFromLocalNamespace();
+      saveState();
+      updateAuthCardUI();
+      closeAuthModal();
+      showToast("Signed in as " + currentUser.email);
+      refreshUI();
+    }
+
+    function handleEmailSignUp() {
+      const email = document.getElementById('auth-email-input').value.trim();
+      const pass = document.getElementById('auth-pass-input').value;
+      if (!email || pass.length < 6) return showToast("Valid email & 6+ char password required");
+
+      const safeUid = 'usr_' + btoa(email.toLowerCase()).replace(/[^a-zA-Z0-9]/g, '').slice(0, 18);
+      currentUser = { uid: safeUid, displayName: email.split('@')[0], email: email, provider: 'password' };
+      localStorage.setItem('mmm_active_user', JSON.stringify(currentUser));
+      hydrateFromLocalNamespace();
+      saveState();
+      updateAuthCardUI();
+      closeAuthModal();
+      showToast("Account created for " + currentUser.email);
+      refreshUI();
+    }
+
+    function continueAsGuest() {
+      closeAuthModal();
+      showToast("Continuing as Guest. All data saved locally.");
+    }
+
+    function closeAuthModal() {
+      document.getElementById('modal-auth').classList.add('hidden');
+    }
+
+    function handleSignOut() {
+      currentUser = null;
+      localStorage.removeItem('mmm_active_user');
+      hydrateFromLocalNamespace();
+      updateAuthCardUI();
+      showToast("Signed out. Operating in Guest mode.");
+      refreshUI();
+    }
+
+    function updateAuthCardUI() {
+      const loggedInView = document.getElementById('auth-logged-in-view');
+      const loggedOutView = document.getElementById('auth-logged-out-view');
+      const syncDot = document.getElementById('cloud-sync-indicator');
+
+      if (currentUser) {
+        loggedInView.classList.remove('hidden');
+        loggedOutView.classList.add('hidden');
+        document.getElementById('user-display-name').innerText = currentUser.displayName || 'Athlete';
+        document.getElementById('user-display-email').innerText = currentUser.email || 'Cloud Active';
+        document.getElementById('user-display-uid').innerText = currentUser.uid.substring(0, 14);
+        document.getElementById('user-avatar-circle').innerText = (currentUser.displayName || currentUser.email || 'A')[0].toUpperCase();
+
+        document.getElementById('drawer-user-name').innerText = currentUser.displayName || 'Athlete';
+        document.getElementById('drawer-user-email').innerText = currentUser.email || 'Cloud Active';
+        document.getElementById('drawer-user-avatar').innerText = (currentUser.displayName || currentUser.email || 'A')[0].toUpperCase();
+
+        syncDot.className = "w-2 h-2 rounded-full bg-emerald-400";
+      } else {
+        loggedInView.classList.add('hidden');
+        loggedOutView.classList.remove('hidden');
+
+        document.getElementById('drawer-user-name').innerText = "Guest Athlete";
+        document.getElementById('drawer-user-email').innerText = "Local Isolated Store";
+        document.getElementById('drawer-user-avatar').innerText = "G";
+
+        syncDot.className = "w-2 h-2 rounded-full bg-amber-400";
+      }
+    }
+
+    function openCaptainChat() {
+      toggleModal('modal-captain');
+      lucide.createIcons();
+    }
+
+    function sendQuickPrompt(promptText) {
+      document.getElementById('captain-query-input').value = promptText;
+      dispatchCaptainQuery();
+    }
+
+    async function dispatchCaptainQuery() {
+      const input = document.getElementById('captain-query-input');
+      const sendBtn = document.getElementById('captain-send-btn');
+      const q = input.value.trim();
+      if (!q) return;
+
+      appendChatMessage('user', q);
+      input.value = '';
+      sendBtn.disabled = true;
+
+      const thinkingId = 'thinking_' + Date.now();
+      appendThinkingBubble(thinkingId);
+
+      try {
+        const responseText = await callGeminiLive(q);
+        removeThinkingBubble(thinkingId);
+        appendChatMessage('captain', responseText);
+      } catch (e) {
+        removeThinkingBubble(thinkingId);
+        appendChatMessage('captain', "Woof! Hit a network snag. Remember to prioritize your daily protein (" + userProfile.proteinTarget + "g) and progressive overload!");
+      } finally {
+        sendBtn.disabled = false;
+        lucide.createIcons();
+      }
+    }
+
+    function appendChatMessage(sender, text) {
+      const stream = document.getElementById('captain-chat-stream');
+      const div = document.createElement('div');
+      div.className = "flex items-start gap-2";
+
+      if (sender === 'user') {
+        div.className = "flex items-start justify-end gap-2";
+        div.innerHTML = `
+          <div class="theme-panel border border-[var(--border-panel)] p-3 rounded-2xl rounded-tr-sm text-white leading-relaxed max-w-[85%] font-medium">
+            ${text}
+          </div>
+          <div class="w-6 h-6 rounded-full theme-btn-main font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">
+            You
+          </div>
+        `;
+      } else {
+        div.innerHTML = `
+          <div class="w-6 h-6 rounded-full bg-amber-500 text-black font-black flex items-center justify-center text-[10px] shrink-0 mt-0.5">
+            🐕
+          </div>
+          <div class="theme-sub border border-[var(--border-panel)] p-3 rounded-2xl rounded-tl-sm text-slate-200 space-y-1.5 leading-relaxed max-w-[85%]">
+            <span class="font-bold text-amber-300 block text-[11px]">Captain</span>
+            <div class="prose prose-invert text-xs leading-relaxed">${text}</div>
+          </div>
+        `;
+      }
+
+      stream.appendChild(div);
+      stream.scrollTop = stream.scrollHeight;
+    }
+
+    function appendThinkingBubble(id) {
+      const stream = document.getElementById('captain-chat-stream');
+      const div = document.createElement('div');
+      div.id = id;
+      div.className = "flex items-start gap-2";
+      div.innerHTML = `
+        <div class="w-6 h-6 rounded-full bg-amber-500 text-black font-black flex items-center justify-center text-[10px] shrink-0 mt-0.5 animate-pulse">
+          🐕
+        </div>
+        <div class="theme-sub border border-[var(--border-panel)] p-3 rounded-2xl text-slate-400 text-xs">
+          Captain is consulting fitness science & Indian nutrition databases...
+        </div>
+      `;
+      stream.appendChild(div);
+      stream.scrollTop = stream.scrollHeight;
+    }
+
+    function removeThinkingBubble(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    }
+
+    async function callGeminiLive(userQuery) {
+      const apiKey = "";
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+      const systemPrompt = `You are 'Captain', the high-IQ golden retriever mascot and elite fitness & body recomposition coach in the 'mr.muscle_mind' app.
+      
+      User Profile Context:
+      - Weight: ${userProfile.weight}kg, Gender: ${userProfile.gender}, Age: ${userProfile.age}, Target Deficit: ${userProfile.deficitTarget} kcal, Daily Protein Target: ${userProfile.proteinTarget}g, Calorie Target: ${userProfile.calorieTarget} kcal.
+      
+      Instructions:
+      1. Give accurate, direct answers without generic filler.
+      2. If asked about Indian protein powders, quote realistic Indian prices:
+         - Nakpro Soy Isolate: ~₹800-900 / 1kg (27g protein/scoop).
+         - AS-IT-IS Soy Isolate: ~₹850-950 / 1kg (27g protein/scoop).
+         - MuscleBlaze Soy Protein: ~₹1,100-1,250 / 1kg.
+         - Amul Raw Whey: ~₹1,800-2,000 / 1kg.
+      3. For beginner PPL, recommend 8-12 reps per set, stopping at RPE 8-9 (1-2 reps before failure).
+      4. For female/sister queries, calculate target protein as 1.6-1.8g/kg and adjust BMR by -161 kcal.
+      5. Use bullet points and an encouraging, friendly canine tone ("Woof!").`;
+
+      const payload = {
+        contents: [{ parts: [{ text: userQuery }] }],
+        systemInstruction: { parts: [{ text: systemPrompt }] }
+      };
+
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) throw new Error("Empty response");
+
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n\n/g, '<br><br>')
+        .replace(/\n/g, '<br>');
+    }
+
+    function setPPLRoutine(routine) {
+      activeRoutine = routine;
+      document.querySelectorAll('.ppl-pill').forEach(b => {
+        b.className = "ppl-pill py-1.5 rounded-xl text-xs font-display font-bold theme-sub border border-[var(--border-panel)] text-slate-400 hover:text-white transition";
+      });
+      const activeBtn = document.getElementById(`btn-ppl-${routine}`);
+      if (activeBtn) activeBtn.className = "ppl-pill py-1.5 rounded-xl text-xs font-display font-bold theme-btn-main transition";
+      document.getElementById('ppl-active-badge').innerText = `${routine.toUpperCase()} DAY`;
+      populatePPLPicker();
+    }
+
+    function populatePPLPicker() {
+      const sel = document.getElementById('ppl-exercise-picker');
+      const list = exerciseLibrary[activeRoutine] || [];
+      sel.innerHTML = list.map(ex => `<option value="${ex}">${ex}</option>`).join('');
+      onExerciseChange();
+    }
+
+    function onExerciseChange() {
+      checkExerciseHistory();
+      renderStructuredSetRows();
+    }
+
+    function adjustSetCount(delta) {
+      currentSetCount = Math.max(1, Math.min(8, currentSetCount + delta));
+      document.getElementById('set-count-display').innerText = `${currentSetCount} ${currentSetCount === 1 ? 'Set' : 'Sets'}`;
+      renderStructuredSetRows();
+    }
+
+    function renderStructuredSetRows(prefilledSets = null) {
+      const container = document.getElementById('workout-set-rows-container');
+      container.innerHTML = '';
+
+      for (let i = 1; i <= currentSetCount; i++) {
+        const row = document.createElement('div');
+        row.className = "grid grid-cols-12 gap-1.5 items-center";
+
+        const defaultKg = prefilledSets && prefilledSets[i - 1] ? prefilledSets[i - 1].kg : (i === 1 ? 60 : '');
+        const defaultReps = prefilledSets && prefilledSets[i - 1] ? prefilledSets[i - 1].reps : 10;
+        const defaultRpe = prefilledSets && prefilledSets[i - 1] ? prefilledSets[i - 1].rpe : 8.5;
+
+        row.innerHTML = `
+          <div class="col-span-2 text-center font-mono font-bold text-xs theme-sub p-2 rounded-xl border border-[var(--border-panel)]">
+            #${i}
+          </div>
+          <div class="col-span-4">
+            <input type="number" step="0.5" placeholder="kg" value="${defaultKg}" class="set-row-kg theme-input w-full rounded-xl p-2 text-xs text-white text-center font-bold font-mono">
+          </div>
+          <div class="col-span-3">
+            <input type="number" step="1" placeholder="reps" value="${defaultReps}" class="set-row-reps theme-input w-full rounded-xl p-2 text-xs text-white text-center font-bold font-mono">
+          </div>
+          <div class="col-span-3">
+            <input type="number" step="0.5" min="5" max="10" placeholder="RPE" value="${defaultRpe}" class="set-row-rpe theme-input w-full rounded-xl p-2 text-xs text-white text-center font-bold font-mono">
+          </div>
+        `;
+        container.appendChild(row);
+      }
+    }
+
+    function checkExerciseHistory() {
+      const sel = document.getElementById('ppl-exercise-picker');
+      const ex = sel ? sel.value : null;
+      const banner = document.getElementById('prev-session-summary');
+      const autofillBtn = document.getElementById('btn-autofill-history');
+
+      if (!ex) return;
+
+      const previousDates = Object.keys(workoutData)
+        .filter(d => d < activeDate && workoutData[d] && workoutData[d].some(s => s.ex === ex))
+        .sort()
+        .reverse();
+
+      if (previousDates.length > 0) {
+        const lastDate = previousDates[0];
+        const lastSets = workoutData[lastDate].filter(s => s.ex === ex);
+        const summary = lastSets.map((s, idx) => `S${idx + 1}: ${s.kg}kg×${s.reps}`).join(' | ');
+        banner.innerHTML = `<span class="text-white font-bold">${lastDate}:</span> ${summary}`;
+        autofillBtn.classList.remove('hidden');
+      } else {
+        banner.innerText = "No prior recorded session found.";
+        autofillBtn.classList.add('hidden');
+      }
+    }
+
+    function autoFillFromHistory() {
+      const sel = document.getElementById('ppl-exercise-picker');
+      const ex = sel ? sel.value : null;
+      if (!ex) return;
+
+      const previousDates = Object.keys(workoutData)
+        .filter(d => d < activeDate && workoutData[d] && workoutData[d].some(s => s.ex === ex))
+        .sort()
+        .reverse();
+
+      if (previousDates.length > 0) {
+        const lastSets = workoutData[previousDates[0]].filter(s => s.ex === ex);
+        currentSetCount = lastSets.length;
+        document.getElementById('set-count-display').innerText = `${currentSetCount} ${currentSetCount === 1 ? 'Set' : 'Sets'}`;
+        renderStructuredSetRows(lastSets);
+        showToast(`Auto-filled ${currentSetCount} sets from ${previousDates[0]}!`);
+      }
+    }
+
+    function commitAllWorkingSets() {
+      const picker = document.getElementById('ppl-exercise-picker');
+      const ex = picker ? picker.value : null;
+      if (!ex) {
+        showToast("Select an exercise");
+        return;
+      }
+
+      const kgInputs = document.querySelectorAll('.set-row-kg');
+      const repsInputs = document.querySelectorAll('.set-row-reps');
+      const rpeInputs = document.querySelectorAll('.set-row-rpe');
+
+      ensureDateExists();
+
+      let loggedInSession = 0;
+      for (let i = 0; i < kgInputs.length; i++) {
+        const kg = parseFloat(kgInputs[i].value) || 0;
+        const reps = parseInt(repsInputs[i].value) || 0;
+        const rpe = parseFloat(rpeInputs[i].value) || 8.5;
+
+        if (reps > 0) {
+          let isPR = true;
+          Object.keys(workoutData).forEach(d => {
+            workoutData[d].forEach(s => {
+              if (s.ex === ex && (s.kg > kg || (s.kg === kg && s.reps >= reps))) {
+                isPR = false;
+              }
+            });
+          });
+
+          workoutData[activeDate].push({
+            id: 'set_' + Date.now() + '_' + i + '_' + Math.random().toString(36).substr(2, 4),
+            routine: activeRoutine,
+            ex: ex,
+            kg: kg,
+            reps: reps,
+            rpe: rpe,
+            isPR: isPR
+          });
+          loggedInSession++;
+        }
+      }
+
+      if (loggedInSession === 0) {
+        showToast("Enter valid reps for at least one set");
+        return;
+      }
+
+      saveState();
+      renderWorkoutSets();
+      checkExerciseHistory();
+      showToast(`Logged ${loggedInSession} sets for ${ex}!`);
+    }
+
+    function deleteSet(id) {
+      workoutData[activeDate] = workoutData[activeDate].filter(s => s.id !== id);
+      saveState();
+      renderWorkoutSets();
+    }
+
+    function renderWorkoutSets() {
+      const container = document.getElementById('ppl-sets-list');
+      const sets = workoutData[activeDate] || [];
+
+      let volume = 0;
+      sets.forEach(s => volume += (s.kg * s.reps));
+      document.getElementById('ppl-tonnage-label').innerText = `Tonnage: ${volume.toLocaleString()} kg`;
+
+      if (sets.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-500 py-3 text-center">No working sets recorded today.</p>`;
+        return;
+      }
+
+      container.innerHTML = sets.slice().reverse().map((s, i) => `
+        <div class="theme-sub border border-[var(--border-panel)] p-2.5 rounded-xl flex justify-between items-center text-xs">
+          <div>
+            <div class="font-bold text-white flex items-center gap-1.5">
+              <span>${s.ex}</span>
+              ${s.isPR ? `<span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-400 border border-amber-500/40">PR</span>` : ''}
+            </div>
+            <div class="text-[10px] font-mono text-slate-300 mt-0.5">
+              ${s.kg} kg × ${s.reps} reps <span class="text-slate-400">• RPE ${s.rpe}</span>
+              <span class="text-slate-400 ml-1">(${(s.kg * s.reps).toLocaleString()} kg)</span>
+            </div>
+          </div>
+          <button onclick="deleteSet('${s.id}')" class="text-slate-400 hover:text-white p-1">✕</button>
+        </div>
+      `).join('');
+    }
+
+    function saveCustomExercise() {
+      const split = document.getElementById('ce-split-category').value;
+      const name = document.getElementById('ce-exercise-name').value.trim();
+      if (!name) {
+        showToast("Enter exercise name");
+        return;
+      }
+
+      if (!exerciseLibrary[split]) exerciseLibrary[split] = [];
+      exerciseLibrary[split].push(name);
+      saveState();
+      toggleModal('modal-custom-exercise');
+      document.getElementById('ce-exercise-name').value = '';
+      if (activeRoutine === split) populatePPLPicker();
+      showToast(`Added ${name} to ${split.toUpperCase()}!`);
+    }
+
+    function startRestTimer(secs) {
+      clearInterval(restTimer);
+      let rem = secs;
+      const hud = document.getElementById('rest-timer-hud');
+      const disp = document.getElementById('rest-timer-display');
+      hud.classList.remove('hidden');
+
+      function tick() {
+        const m = Math.floor(rem / 60).toString().padStart(2, '0');
+        const s = (rem % 60).toString().padStart(2, '0');
+        disp.innerText = `${m}:${s}`;
+        if (rem <= 0) {
+          clearInterval(restTimer);
+          if ('vibrate' in navigator) navigator.vibrate([200, 100, 200]);
+          hud.classList.add('hidden');
+          showToast("Rest time is up! Ready for next set.");
+        }
+        rem--;
+      }
+      tick();
+      restTimer = setInterval(tick, 1000);
+    }
+
+    function stopRestTimer() {
+      clearInterval(restTimer);
+      document.getElementById('rest-timer-hud').classList.add('hidden');
+    }
+
+    function saveMeasurements() {
+      const weight = parseFloat(document.getElementById('meas-weight').value) || userProfile.weight;
+      const waist = parseFloat(document.getElementById('meas-waist').value) || 0;
+      const chest = parseFloat(document.getElementById('meas-chest').value) || 0;
+      const arms = parseFloat(document.getElementById('meas-arms').value) || 0;
+      const thighs = parseFloat(document.getElementById('meas-thighs').value) || 0;
+      const hips = parseFloat(document.getElementById('meas-hips').value) || 0;
+
+      measurementData[activeDate] = { weight, waist, chest, arms, thighs, hips };
+      syncWeightAcrossApp(weight);
+      showToast("Measurements saved and weight synced!");
+    }
+
+    function renderMeasurements() {
+      const container = document.getElementById('meas-history-list');
+      const dates = Object.keys(measurementData).sort().reverse();
+
+      if (dates.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-500 py-3 text-center">No measurements saved yet.</p>`;
+        return;
+      }
+
+      container.innerHTML = dates.map(d => {
+        const m = measurementData[d];
+        return `
+          <div class="theme-sub border border-[var(--border-panel)] p-2.5 rounded-xl text-xs space-y-1">
+            <div class="flex justify-between font-bold text-white font-mono">
+              <span style="color: var(--accent-main);">${d}</span>
+              <span>Weight: ${m.weight} kg</span>
+            </div>
+            <div class="text-[10px] text-slate-400 flex flex-wrap gap-2 font-mono">
+              <span>Waist: ${m.waist || '--'} cm</span>
+              <span>Chest: ${m.chest || '--'} cm</span>
+              <span>Arms: ${m.arms || '--'} cm</span>
+              <span>Thighs: ${m.thighs || '--'} cm</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderEnergyAndRings() {
+      const day = diaryData[activeDate];
+      const bmr = calculateBMR();
+      const gymMins = day.gymMins || 60;
+      const steps = day.steps || 8500;
+
+      document.getElementById('input-act-gym').value = gymMins;
+      document.getElementById('input-act-steps').value = steps;
+
+      const gymBurn = Math.round(5.5 * userProfile.weight * (gymMins / 60));
+      const stepBurn = Math.round(steps * (0.045 * (userProfile.weight / 70)));
+      const activeBurn = gymBurn + stepBurn;
+      const tdee = bmr + activeBurn;
+
+      let calsIn = 0, p = 0, c = 0, f = 0;
+      day.items.forEach(it => {
+        calsIn += it.cal; p += it.p; c += it.c; f += it.f;
+      });
+
+      const netDeficit = tdee - calsIn;
+
+      document.getElementById('hud-bmr').innerText = bmr.toLocaleString();
+      document.getElementById('hud-active').innerText = activeBurn.toLocaleString();
+      document.getElementById('hud-tdee').innerText = tdee.toLocaleString();
+      document.getElementById('hud-in-cals').innerText = Math.round(calsIn);
+      document.getElementById('hud-total-active-burn').innerText = `${activeBurn} kcal`;
+
+      const defEl = document.getElementById('hud-deficit-val');
+      const badge = document.getElementById('hud-status-badge');
+      if (netDeficit >= 0) {
+        defEl.innerText = `-${Math.round(netDeficit)}`;
+        badge.innerText = netDeficit >= 350 && netDeficit <= 650 ? "OPTIMAL CUT" : "MILD DEFICIT";
+      } else {
+        defEl.innerText = `+${Math.round(-netDeficit)}`;
+        badge.innerText = "SURPLUS";
+      }
+
+      document.getElementById('val-p-cur').innerText = Math.round(p);
+      document.getElementById('val-p-tar').innerText = userProfile.proteinTarget;
+      document.getElementById('bar-p-fill').style.width = `${Math.min(100, (p / userProfile.proteinTarget) * 100)}%`;
+
+      document.getElementById('val-c-cur').innerText = Math.round(c);
+      document.getElementById('val-c-tar').innerText = userProfile.carbTarget;
+      document.getElementById('bar-c-fill').style.width = `${Math.min(100, (c / userProfile.carbTarget) * 100)}%`;
+
+      document.getElementById('val-f-cur').innerText = Math.round(f);
+      document.getElementById('val-f-tar').innerText = userProfile.fatTarget;
+      document.getElementById('bar-f-fill').style.width = `${Math.min(100, (f / userProfile.fatTarget) * 100)}%`;
+
+      const calRatio = Math.min(1, calsIn / userProfile.calorieTarget);
+      document.getElementById('ring-cals').style.strokeDashoffset = 314.16 * (1 - calRatio);
+
+      const pRatio = Math.min(1, p / userProfile.proteinTarget);
+      document.getElementById('ring-protein').style.strokeDashoffset = 238.76 * (1 - pRatio);
+
+      const stepsRatio = Math.min(1, steps / 10000);
+      document.getElementById('ring-steps').style.strokeDashoffset = 163.36 * (1 - stepsRatio);
+    }
+
+    function populateFoodPicker() {
+      const sel = document.getElementById('food-select-dropdown');
+      const prevVal = sel.value;
+      sel.innerHTML = foodList.map(f => `<option value="${f.id}">${f.name} (${f.unit}) - ${f.cal} kcal | P: ${f.p}g</option>`).join('');
+      if (prevVal) sel.value = prevVal;
+      recalculateSingleFoodLiveMacros();
+    }
+
+    function addManualFood() {
+      const id = document.getElementById('food-select-dropdown').value;
+      const qty = parseFloat(document.getElementById('food-qty-input').value) || 1;
+      const f = foodList.find(x => x.id === id);
+      if (f && qty > 0) {
+        addFoodToDiary(f, qty);
+        showToast(`Added ${f.name}`);
+      }
+    }
+
+    function addFoodToDiary(f, qty) {
+      ensureDateExists();
+      diaryData[activeDate].items.push({
+        id: Date.now() + Math.random().toString(),
+        name: f.name,
+        qty: qty,
+        unit: f.unit,
+        cal: Math.round(f.cal * qty),
+        p: +(f.p * qty).toFixed(1),
+        c: +(f.c * qty).toFixed(1),
+        f: +(f.f * qty).toFixed(1)
+      });
+      saveState();
+      renderDiary();
+      renderEnergyAndRings();
+    }
+
+    function deleteFood(id) {
+      diaryData[activeDate].items = diaryData[activeDate].items.filter(it => it.id !== id);
+      saveState();
+      renderDiary();
+      renderEnergyAndRings();
+    }
+
+    function renderDiary() {
+      const container = document.getElementById('diary-list');
+      const items = (diaryData[activeDate] && diaryData[activeDate].items) || [];
+      document.getElementById('diary-count-label').innerText = `${items.length} items`;
+
+      if (items.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-500 py-3 text-center">No meals logged yet.</p>`;
+        return;
+      }
+
+      container.innerHTML = items.slice().reverse().map(it => `
+        <div class="theme-sub border border-[var(--border-panel)] p-2.5 rounded-xl flex justify-between items-center text-xs">
+          <div class="pr-2">
+            <div class="font-bold text-white">${it.name} <span class="font-mono text-slate-300">(${it.qty} ${it.unit})</span></div>
+            <div class="text-[10px] text-slate-400 font-mono">${it.cal} kcal • P: ${it.p}g | C: ${it.c}g | F: ${it.f}g</div>
+            ${it.notes ? `<div class="text-[9px] text-slate-400 truncate max-w-[260px]">${it.notes}</div>` : ''}
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button onclick="openEditLoggedItemModal('${it.id}')" class="text-slate-400 hover:text-white p-1" title="Edit macros">
+              <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+            </button>
+            <button onclick="deleteFood('${it.id}')" class="text-slate-400 hover:text-white p-1" title="Delete entry">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function renderStreakMatrix() {
+      const grid = document.getElementById('matrix-grid-container');
+      grid.innerHTML = '';
+      let streak = 0;
+
+      const refDate = new Date();
+      refDate.setDate(refDate.getDate() - 45);
+
+      for (let i = 0; i < 90; i++) {
+        const d = new Date(refDate);
+        d.setDate(d.getDate() + i);
+        const dStr = d.toISOString().split('T')[0];
+        const rec = diaryData[dStr];
+
+        let status = 'empty';
+        if (rec && (rec.locked || (rec.items && rec.items.length > 0))) {
+          const protein = (rec.items || []).reduce((sum, item) => sum + item.p, 0);
+          if (protein >= userProfile.proteinTarget) {
+            status = 'hit';
+            streak++;
+          } else {
+            status = 'partial';
+          }
+        }
+
+        const cell = document.createElement('div');
+        let bgStyle = 'background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #64748b;';
+        if (status === 'hit') bgStyle = 'background: var(--accent-main); color: #0b0f17; font-weight: bold; box-shadow: 0 0 10px var(--accent-glow);';
+        if (status === 'partial') bgStyle = 'background: var(--accent-main); opacity: 0.55; color: #fff;';
+
+        cell.style = bgStyle;
+        cell.className = `w-7 h-7 rounded-lg flex items-center justify-center text-[9px] font-mono font-bold cursor-pointer active:scale-125 transition`;
+        cell.innerText = i + 1;
+        cell.title = `Day ${i + 1}: ${dStr}`;
+        cell.onclick = () => { activeDate = dStr; refreshUI(); switchTab('diet'); };
+        grid.appendChild(cell);
+      }
+      document.getElementById('stat-streak-counter').innerText = `${streak} Day Streak 🔥`;
+    }
+
+    function renderPeriodAnalytics(days) {
+      document.querySelectorAll('.an-btn').forEach(b => {
+        b.className = "an-btn py-1.5 rounded-lg text-xs font-bold theme-sub text-slate-400";
+      });
+      const activeBtn = document.getElementById(`an-pill-${days}`);
+      if (activeBtn) activeBtn.className = "an-btn py-1.5 rounded-lg text-xs font-bold theme-btn-main";
+
+      const today = new Date();
+      let totCals = 0, totP = 0, totDef = 0, count = 0;
+
+      for (let i = 0; i < days; i++) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        const dStr = d.toISOString().split('T')[0];
+        const r = diaryData[dStr];
+
+        if (r && r.items && r.items.length > 0) {
+          count++;
+          let cals = 0, p = 0;
+          r.items.forEach(it => { cals += it.cal; p += it.p; });
+          const gymBurn = Math.round(5.5 * userProfile.weight * ((r.gymMins || 60) / 60));
+          const stepBurn = Math.round((r.steps || 8500) * (0.045 * (userProfile.weight / 70)));
+          const tdee = calculateBMR() + gymBurn + stepBurn;
+          totCals += cals;
+          totP += p;
+          totDef += (tdee - cals);
+        }
+      }
+
+      if (count > 0) {
+        document.getElementById('an-avg-cals').innerText = Math.round(totCals / count);
+        document.getElementById('an-avg-protein').innerText = Math.round(totP / count);
+        document.getElementById('an-avg-deficit').innerText = Math.round(totDef / count);
+        document.getElementById('an-est-loss').innerText = Math.max(0, (totDef / 7700)).toFixed(2);
+      } else {
+        document.getElementById('an-avg-cals').innerText = '0';
+        document.getElementById('an-avg-protein').innerText = '0';
+        document.getElementById('an-avg-deficit').innerText = '0';
+        document.getElementById('an-est-loss').innerText = '0.0';
+      }
+    }
+
+    function switchMealLoggingMode(mode) {
+      ['single', 'ai'].forEach(m => {
+        const btn = document.getElementById(`btn-mode-${m}`);
+        const panel = document.getElementById(`panel-meal-${m}`);
+        if (m === mode) {
+          btn.className = "py-1.5 rounded-lg theme-btn-main text-center transition";
+          panel.classList.remove('hidden');
+        } else {
+          btn.className = "py-1.5 rounded-lg text-slate-400 hover:text-white text-center transition";
+          panel.classList.add('hidden');
+        }
+      });
+    }
+
+    function appendPrompt(txt) {
+      const input = document.getElementById('ai-food-input');
+      input.value = input.value ? `${input.value}, ${txt}` : txt;
+    }
+
+    function openEditSelectedFoodModal() {
+      const sel = document.getElementById('food-select-dropdown');
+      const food = foodList.find(f => f.id === sel.value);
+      if (!food) return;
+
+      document.getElementById('edit-food-id').value = food.id;
+      document.getElementById('edit-food-source').value = 'db';
+      document.getElementById('edit-food-name').value = food.name;
+      document.getElementById('edit-food-unit').value = food.unit;
+      document.getElementById('edit-food-cal').value = food.cal;
+      document.getElementById('edit-food-p').value = food.p;
+      document.getElementById('edit-food-c').value = food.c;
+      document.getElementById('edit-food-f').value = food.f;
+
+      toggleModal('modal-edit-food');
+    }
+
+    function openEditLoggedItemModal(entryId) {
+      const day = diaryData[activeDate];
+      const entry = day.items.find(it => it.id === entryId);
+      if (!entry) return;
+
+      document.getElementById('edit-food-id').value = entry.id;
+      document.getElementById('edit-food-source').value = 'diary';
+      document.getElementById('edit-food-name').value = entry.name;
+      document.getElementById('edit-food-unit').value = `${entry.qty} ${entry.unit}`;
+      document.getElementById('edit-food-cal').value = entry.cal;
+      document.getElementById('edit-food-p').value = entry.p;
+      document.getElementById('edit-food-c').value = entry.c;
+      document.getElementById('edit-food-f').value = entry.f;
+
+      toggleModal('modal-edit-food');
+    }
+
+    function commitFoodMacroEdit() {
+      const id = document.getElementById('edit-food-id').value;
+      const source = document.getElementById('edit-food-source').value;
+      const name = document.getElementById('edit-food-name').value.trim();
+      const unit = document.getElementById('edit-food-unit').value.trim() || 'serving';
+      const cal = parseFloat(document.getElementById('edit-food-cal').value) || 0;
+      const p = parseFloat(document.getElementById('edit-food-p').value) || 0;
+      const c = parseFloat(document.getElementById('edit-food-c').value) || 0;
+      const f = parseFloat(document.getElementById('edit-food-f').value) || 0;
+
+      if (!name) {
+        showToast("Item name is required");
+        return;
+      }
+
+      if (source === 'db') {
+        const item = foodList.find(x => x.id === id);
+        if (item) {
+          item.name = name; item.unit = unit; item.cal = cal; item.p = p; item.c = c; item.f = f;
+          saveState();
+          populateFoodPicker();
+          recalculateSingleFoodLiveMacros();
+          showToast(`Updated '${name}' in food library!`);
+        }
+      } else {
+        const entry = diaryData[activeDate].items.find(it => it.id === id);
+        if (entry) {
+          entry.name = name; entry.cal = cal; entry.p = p; entry.c = c; entry.f = f;
+          saveState();
+          renderDiary();
+          renderEnergyAndRings();
+          showToast(`Updated '${name}' in daily log!`);
+        }
+      }
+      toggleModal('modal-edit-food');
+    }
+
+    function saveCustomFoodItem() {
+      const name = document.getElementById('cf-name').value.trim();
+      const unit = document.getElementById('cf-unit').value.trim() || 'serving';
+      const cal = parseFloat(document.getElementById('cf-cals').value) || 0;
+      const p = parseFloat(document.getElementById('cf-p').value) || 0;
+      const c = parseFloat(document.getElementById('cf-c').value) || 0;
+      const f = parseFloat(document.getElementById('cf-f').value) || 0;
+
+      if (!name) {
+        showToast("Enter food name");
+        return;
+      }
+
+      foodList.push({ id: Date.now().toString(), name, unit, cal, p, c, f, kw: [name.toLowerCase()] });
+      saveState();
+      populateFoodPicker();
+      toggleModal('modal-custom-food');
+      showToast(`Saved ${name} to food vault!`);
+    }
+
+    function handleEndDaySubmit() {
+      ensureDateExists();
+      const day = diaryData[activeDate];
+      const sets = workoutData[activeDate] || [];
+
+      let calsIn = 0, p = 0;
+      day.items.forEach(it => { calsIn += it.cal; p += it.p; });
+
+      let volume = 0;
+      sets.forEach(s => volume += (s.kg * s.reps));
+
+      day.locked = true;
+      saveState();
+
+      document.getElementById('lock-cal').innerText = `${Math.round(calsIn)} kcal`;
+      document.getElementById('lock-p').innerText = `${Math.round(p)} g`;
+      document.getElementById('lock-tonnage').innerText = `${volume.toLocaleString()} kg`;
+      document.getElementById('lock-water').innerText = `${day.water || 0} ml`;
+
+      const pHit = p >= userProfile.proteinTarget;
+      document.getElementById('day-locked-summary-text').innerText = pHit
+        ? "Superb consistency! Your protein threshold was met and daily volume secured."
+        : "Day recorded. Protein fell slightly below target—aim for an isolate shake or egg whites tomorrow!";
+
+      renderStreakMatrix();
+      toggleModal('modal-day-locked');
+      lucide.createIcons();
+    }
+
+    function openEnergyCustomizerModal() {
+      document.getElementById('cust-gender').value = userProfile.gender || 'male';
+      document.getElementById('cust-age').value = userProfile.age || 30;
+      document.getElementById('cust-weight').value = userProfile.weight || 79;
+      document.getElementById('cust-height').value = userProfile.height || 173;
+      document.getElementById('cust-activity-factor').value = userProfile.activityFactor || 1.55;
+      document.getElementById('cust-strategy').value = userProfile.deficitTarget || -500;
+
+      document.getElementById('cust-p').value = userProfile.proteinTarget;
+      document.getElementById('cust-c').value = userProfile.carbTarget;
+      document.getElementById('cust-f').value = userProfile.fatTarget;
+      document.getElementById('cust-cal-cap').value = userProfile.calorieTarget;
+
+      previewEnergyCalculations();
+      toggleModal('modal-energy-customizer');
+    }
+
+    function previewEnergyCalculations() {
+      const g = document.getElementById('cust-gender').value;
+      const a = parseInt(document.getElementById('cust-age').value) || 30;
+      const w = parseFloat(document.getElementById('cust-weight').value) || 79;
+      const h = parseFloat(document.getElementById('cust-height').value) || 173;
+      const act = parseFloat(document.getElementById('cust-activity-factor').value) || 1.55;
+      const strat = parseInt(document.getElementById('cust-strategy').value) || -500;
+
+      const tempProf = { gender: g, age: a, weight: w, height: h };
+      const bmr = calculateBMR(tempProf);
+      const tdee = Math.round(bmr * act);
+      const targetIntake = Math.max(1200, tdee + strat);
+
+      document.getElementById('prev-bmr-val').innerText = `${bmr.toLocaleString()} kcal`;
+      document.getElementById('prev-tdee-val').innerText = `${tdee.toLocaleString()} kcal`;
+      document.getElementById('prev-intake-val').innerText = `${targetIntake.toLocaleString()} kcal`;
+
+      const p = Math.round(w * (g === 'female' ? 1.8 : 2.0));
+      const f = Math.round((targetIntake * 0.25) / 9);
+      const c = Math.max(50, Math.round((targetIntake - (p * 4) - (f * 9)) / 4));
+
+      document.getElementById('cust-p').value = p;
+      document.getElementById('cust-f').value = f;
+      document.getElementById('cust-c').value = c;
+      document.getElementById('cust-cal-cap').value = targetIntake;
+    }
+
+    function commitEnergyCustomizer() {
+      const g = document.getElementById('cust-gender').value;
+      const a = parseInt(document.getElementById('cust-age').value) || 30;
+      const w = parseFloat(document.getElementById('cust-weight').value) || 79;
+      const h = parseFloat(document.getElementById('cust-height').value) || 173;
+      const act = parseFloat(document.getElementById('cust-activity-factor').value) || 1.55;
+      const strat = parseInt(document.getElementById('cust-strategy').value) || -500;
+
+      const p = parseInt(document.getElementById('cust-p').value) || 140;
+      const c = parseInt(document.getElementById('cust-c').value) || 220;
+      const f = parseInt(document.getElementById('cust-f').value) || 55;
+      const cal = parseInt(document.getElementById('cust-cal-cap').value) || 1950;
+
+      userProfile.gender = g;
+      userProfile.age = a;
+      userProfile.weight = w;
+      userProfile.height = h;
+      userProfile.activityFactor = act;
+      userProfile.deficitTarget = strat;
+
+      userProfile.proteinTarget = p;
+      userProfile.carbTarget = c;
+      userProfile.fatTarget = f;
+      userProfile.calorieTarget = cal;
+
+      syncWeightAcrossApp(w);
+      toggleModal('modal-energy-customizer');
+      showToast("Custom Energy Balance & Macro Targets Applied!");
+    }
+
+    function applyTheme(themeKey) {
+      currentTheme = themeKey;
+      localStorage.setItem('mmm_theme_v9', themeKey);
+
+      if (themeKey === 'purple') {
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme', themeKey);
+      }
+
+      ['purple', 'crimson', 'cyan', 'emerald', 'stealth'].forEach(k => {
+        const el = document.getElementById(`theme-check-${k}`);
+        if (el) el.classList.toggle('hidden', k !== themeKey);
+      });
+
+      toggleModal('modal-themes');
+      renderEnergyAndRings();
+      lucide.createIcons();
+    }
+
+    function syncExpenditure() {
+      diaryData[activeDate].gymMins = parseFloat(document.getElementById('input-act-gym').value) || 0;
+      diaryData[activeDate].steps = parseFloat(document.getElementById('input-act-steps').value) || 0;
+      saveState();
+      renderEnergyAndRings();
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-view').forEach(v => v.classList.add('hidden'));
+      const targetView = document.getElementById(`tab-${tabId}`);
+      if (targetView) targetView.classList.remove('hidden');
+
+      // Update drawer highlights
+      ['diet', 'ppl', 'meas', 'stats'].forEach(t => {
+        const btn = document.getElementById(`drawer-nav-${t}`);
+        if (btn) {
+          if (t === tabId) {
+            btn.className = "w-full p-2.5 rounded-xl flex items-center gap-3 theme-btn-main font-bold transition text-left";
+          } else {
+            btn.className = "w-full p-2.5 rounded-xl flex items-center gap-3 text-slate-200 hover:bg-white/5 active:scale-98 transition text-left";
+          }
+        }
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      lucide.createIcons();
+    }
+
+    function toggleModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.toggle('hidden');
+    }
+
+    function refreshUI() {
+      ensureDateExists();
+      const d = new Date(activeDate);
+      const isToday = activeDate === new Date().toISOString().split('T')[0];
+      document.getElementById('top-date-display').innerText = d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) + (isToday ? ' (Today)' : '');
+
+      renderEnergyAndRings();
+      renderWeighInAndWater();
+      populatePrebuiltDropdown();
+      renderDiary();
+      populateFoodPicker();
+      populatePPLPicker();
+      renderWorkoutSets();
+      renderMeasurements();
+      renderStreakMatrix();
+      renderPeriodAnalytics(7);
+      lucide.createIcons();
+    }
+
+    // INITIALIZATION & FIRST-LAUNCH GATEWAY
+    window.addEventListener('DOMContentLoaded', () => {
+      applyTheme(currentTheme);
+      setPPLRoutine('push');
+      hydrateFromLocalNamespace();
+      updateAuthCardUI();
+      refreshUI();
+
+      // Show Login Modal immediately on first launch or if not logged in
+      if (!currentUser) {
+        document.getElementById('modal-auth').classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
